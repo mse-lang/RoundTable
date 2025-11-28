@@ -67,15 +67,10 @@ const SCRIPT_PROPERTY_KEYS = {
  * @returns {GoogleAppsScript.Spreadsheet.Spreadsheet}
  */
 function getMasterDB() {
-  try {
-    if (!MASTER_DB_ID) {
-      throw new Error('MASTER_DB_ID가 설정되지 않았습니다. Script Properties를 확인하세요.');
-    }
-    return SpreadsheetApp.openById(MASTER_DB_ID);
-  } catch (error) {
-    sendToGoogleChat(`[Config] DB 연결 실패: ${error.message}`);
-    throw error;
+  if (!MASTER_DB_ID) {
+    throw new Error('MASTER_DB_ID가 설정되지 않았습니다. Script Properties를 확인하세요.');
   }
+  return SpreadsheetApp.openById(MASTER_DB_ID);
 }
 
 /**
@@ -88,9 +83,7 @@ function getSheet(sheetName) {
   const sheet = ss.getSheetByName(sheetName);
   
   if (!sheet) {
-    const error = new Error(`시트를 찾을 수 없습니다: ${sheetName}`);
-    sendToGoogleChat(`[Config] ${error.message}`);
-    throw error;
+    throw new Error(`시트를 찾을 수 없습니다: ${sheetName}`);
   }
   
   return sheet;
@@ -202,7 +195,8 @@ function getConfig(key) {
     const valueColIndex = headers.indexOf('VALUE');
     
     if (keyColIndex === -1 || valueColIndex === -1) {
-      throw new Error('System_Config 시트에 KEY 또는 VALUE 컬럼이 없습니다.');
+      Logger.log('System_Config 시트에 KEY 또는 VALUE 컬럼이 없습니다.');
+      return null;
     }
     
     for (let i = 1; i < data.length; i++) {
@@ -215,8 +209,8 @@ function getConfig(key) {
     return null;
     
   } catch (error) {
-    sendToGoogleChat(`[Config] 설정 조회 실패 (${key}): ${error.message}`);
-    throw error;
+    Logger.log(`[Config] 설정 조회 실패 (${key}): ${error.message}`);
+    return null;
   }
 }
 
