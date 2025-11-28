@@ -36,7 +36,8 @@ function doGet(e) {
     // CORS 프리플라이트 처리 (OPTIONS)는 doGet에서 불가하므로
     // 실제 CORS는 프론트엔드에서 JSONP 또는 프록시 사용 권장
     
-    const params = e.parameter;
+    // e가 undefined인 경우 방어 처리
+    const params = (e && e.parameter) ? e.parameter : {};
     const action = params.action || '';
     
     Logger.log(`[doGet] Action: ${action}, Params: ${JSON.stringify(params)}`);
@@ -150,7 +151,8 @@ function doGet(e) {
     
   } catch (error) {
     Logger.log(`[doGet] Error: ${error.message}`);
-    sendToGoogleChat(`❌ *API 오류 (GET)*\nAction: ${e.parameter?.action}\n오류: ${error.message}`);
+    const actionName = (e && e.parameter) ? e.parameter.action : 'unknown';
+    sendToGoogleChat(`❌ *API 오류 (GET)*\nAction: ${actionName}\n오류: ${error.message}`);
     
     return createErrorResponse(error.message, 500);
   }
@@ -267,7 +269,8 @@ function doPost(e) {
     
   } catch (error) {
     Logger.log(`[doPost] Error: ${error.message}`);
-    sendToGoogleChat(`❌ *API 오류 (POST)*\nAction: ${e.parameter?.action}\n오류: ${error.message}`);
+    const actionName = (e && e.parameter) ? e.parameter.action : 'unknown';
+    sendToGoogleChat(`❌ *API 오류 (POST)*\nAction: ${actionName}\n오류: ${error.message}`);
     
     return createErrorResponse(error.message, 500);
   }
