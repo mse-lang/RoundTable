@@ -14,6 +14,44 @@ app.use(renderer)
 app.use('/api/*', cors())
 
 // ============================================================
+// GAS API 프록시 (CORS 우회)
+// ============================================================
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzGCjvvVnwliXvEcvLwKsxFvYrQVuE6DfhcCFyPQ3zgOAA-DFA774xv5aFc3AuzBrly/exec'
+
+// GET 요청 프록시
+app.get('/api/gas', async (c) => {
+  const url = new URL(c.req.url)
+  const params = url.searchParams.toString()
+  
+  try {
+    const response = await fetch(`${GAS_API_URL}?${params}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    const data = await response.json()
+    return c.json(data)
+  } catch (error) {
+    return c.json({ success: false, message: 'GAS API 호출 실패', error: String(error) }, 500)
+  }
+})
+
+// POST 요청 프록시
+app.post('/api/gas', async (c) => {
+  try {
+    const body = await c.req.json()
+    const response = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    const data = await response.json()
+    return c.json(data)
+  } catch (error) {
+    return c.json({ success: false, message: 'GAS API 호출 실패', error: String(error) }, 500)
+  }
+})
+
+// ============================================================
 // 메인 페이지 - 딜룸 목록
 // ============================================================
 app.get('/', (c) => {

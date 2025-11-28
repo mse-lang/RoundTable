@@ -8,82 +8,38 @@
 // ============================================================
 
 /**
- * GAS API URL 설정
+ * API URL 설정 - Hono 프록시 사용 (CORS 우회)
  */
-const API_BASE_URL = window.GAS_API_URL || 'https://script.google.com/macros/s/AKfycbzGCjvvVnwliXvEcvLwKsxFvYrQVuE6DfhcCFyPQ3zgOAA-DFA774xv5aFc3AuzBrly/exec';
+const API_BASE_URL = '/api/gas';
 
-// API 호출 헬퍼 (GAS CORS 우회)
+// API 호출 헬퍼
 async function apiCall(action, params = {}, method = 'GET') {
-  // API URL이 없으면 데모 모드
-  if (!API_BASE_URL) {
-    console.log(`[Demo Mode] API 호출: ${action}`, params);
-    return null; // 데모 데이터 사용
-  }
-  
   try {
-    const queryParams = new URLSearchParams({ action, ...params });
-    const url = `${API_BASE_URL}?${queryParams.toString()}`;
+    let url = API_BASE_URL;
+    let options = {
+      method: method,
+      headers: { 'Content-Type': 'application/json' }
+    };
     
     if (method === 'GET') {
-      // GAS는 redirect 응답을 하므로 redirect: 'follow' 필요
-      const response = await fetch(url, {
-        method: 'GET',
-        redirect: 'follow'
-      });
-      const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.message || 'API 오류');
-      }
-      
-      return data.data;
+      const queryParams = new URLSearchParams({ action, ...params });
+      url = `${API_BASE_URL}?${queryParams.toString()}`;
     } else {
-      // POST는 form submit 방식 사용 (CORS 우회)
-      return new Promise((resolve, reject) => {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = API_BASE_URL;
-        form.target = '_blank';
-        
-        // action 파라미터 추가
-        const actionInput = document.createElement('input');
-        actionInput.type = 'hidden';
-        actionInput.name = 'action';
-        actionInput.value = action;
-        form.appendChild(actionInput);
-        
-        // 나머지 파라미터 추가
-        Object.entries(params).forEach(([key, value]) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = key;
-          input.value = value;
-          form.appendChild(input);
-        });
-        
-        // iframe으로 제출 (페이지 이동 방지)
-        const iframe = document.createElement('iframe');
-        iframe.name = 'api-frame-' + Date.now();
-        iframe.style.display = 'none';
-        form.target = iframe.name;
-        
-        document.body.appendChild(iframe);
-        document.body.appendChild(form);
-        
-        iframe.onload = () => {
-          setTimeout(() => {
-            iframe.remove();
-            form.remove();
-            resolve({ submitted: true });
-          }, 100);
-        };
-        
-        form.submit();
-      });
+      options.body = JSON.stringify({ action, ...params });
     }
+    
+    const response = await fetch(url, options);
+    const data = await response.json();
+    
+    if (!data.success) {
+      console.error(`API Error (${action}):`, data.message);
+      return null; // 실패 시 데모 데이터 사용
+    }
+    
+    return data.data;
   } catch (error) {
     console.error(`API 호출 실패 (${action}):`, error);
-    throw error;
+    return null; // 에러 시 데모 데이터 사용
   }
 }
 
