@@ -6,7 +6,7 @@ export const renderer = jsxRenderer(({ children, title }) => {
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{title || 'VS AI ERP - 딜룸'}</title>
+        <title>{title || '벤쳐스퀘어 라운드테이블'}</title>
         
         {/* Tailwind CSS */}
         <script src="https://cdn.tailwindcss.com"></script>

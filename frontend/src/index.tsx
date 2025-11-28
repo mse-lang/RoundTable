@@ -137,7 +137,7 @@ app.get('/', (c) => {
       <Footer />
       <NDAModal />
     </div>,
-    { title: 'VS AI ERP - 팩트시트 데이터룸' }
+    { title: '벤쳐스퀘어 라운드테이블' }
   )
 })
 
@@ -180,7 +180,7 @@ app.get('/deal/:id', (c) => {
       <Footer />
       <NDAModal />
     </div>,
-    { title: `딜 상세 - ${dealId}` }
+    { title: `딜 상세 | 벤쳐스퀘어 라운드테이블` }
   )
 })
 
@@ -312,7 +312,7 @@ app.get('/round-table', (c) => {
         </div>
       </div>
     </div>,
-    { title: 'VS AI ERP - 라운드테이블' }
+    { title: '라운드테이블 | 벤쳐스퀘어' }
   )
 })
 
@@ -385,7 +385,7 @@ app.get('/my-page', (c) => {
 
       <Footer />
     </div>,
-    { title: 'VS AI ERP - 마이페이지' }
+    { title: '마이페이지 | 벤쳐스퀘어 라운드테이블' }
   )
 })
 

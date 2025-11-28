@@ -12,8 +12,8 @@ export const Footer = () => {
                 <i data-lucide="trending-up" class="w-5 h-5 text-white"></i>
               </div>
               <div>
-                <div class="font-bold text-lg text-white">VS AI ERP</div>
-                <div class="text-xs text-gray-500">팩트시트 데이터룸</div>
+                <div class="font-bold text-lg text-white">VentureSquare</div>
+                <div class="text-xs text-gray-500">Round Table</div>
               </div>
             </div>
             <p class="text-sm text-gray-400 max-w-md leading-relaxed">
