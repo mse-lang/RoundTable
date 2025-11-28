@@ -155,7 +155,7 @@ app.get('/', (c) => {
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* CTA Section - 딜 등록 */}
         <section class="py-20 relative overflow-hidden">
           <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
           <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -168,6 +168,114 @@ app.get('/', (c) => {
               <i data-lucide="plus" class="w-5 h-5"></i>
               딜 등록 신청
             </a>
+          </div>
+        </section>
+
+        {/* Investor Registration CTA Section */}
+        <section class="py-16 border-t border-white/10">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-purple-900/40 to-blue-900/40 rounded-3xl border border-purple-500/20 overflow-hidden">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12">
+                {/* Left - Content */}
+                <div class="flex flex-col justify-center">
+                  <div class="inline-flex items-center gap-2 bg-purple-500/20 text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    투자자 전용
+                  </div>
+                  <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">
+                    새로운 딜 소식을<br/>
+                    가장 먼저 받아보세요
+                  </h2>
+                  <p class="text-gray-400 mb-6 leading-relaxed">
+                    투자자 회원으로 등록하시면 매주 엄선된 스타트업 딜 정보를 
+                    뉴스레터로 받아보실 수 있습니다. AI가 분석한 투자심사보고서와 
+                    함께 검증된 투자 기회를 만나보세요.
+                  </p>
+                  
+                  {/* Benefits */}
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                    <div class="flex items-center gap-3 text-sm">
+                      <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="mail" class="w-4 h-4 text-blue-400"></i>
+                      </div>
+                      <span class="text-gray-300">주간 딜 뉴스레터</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                      <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="eye" class="w-4 h-4 text-green-400"></i>
+                      </div>
+                      <span class="text-gray-300">월 5건 무료 열람</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                      <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="calendar" class="w-4 h-4 text-purple-400"></i>
+                      </div>
+                      <span class="text-gray-300">라운드테이블 초대</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                      <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="gift" class="w-4 h-4 text-orange-400"></i>
+                      </div>
+                      <span class="text-gray-300">추천 시 +2 열람권</span>
+                    </div>
+                  </div>
+
+                  {/* CTA Button */}
+                  <a href="/investor/register" 
+                    class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition-all shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50 w-fit">
+                    <i data-lucide="briefcase" class="w-5 h-5"></i>
+                    투자자 등록 신청
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                  </a>
+                </div>
+
+                {/* Right - Visual */}
+                <div class="hidden lg:flex items-center justify-center">
+                  <div class="relative">
+                    {/* Background Glow */}
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/30 to-blue-500/30 rounded-3xl blur-3xl"></div>
+                    
+                    {/* Mock Newsletter Card */}
+                    <div class="relative bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 w-80 transform rotate-3 hover:rotate-0 transition-transform">
+                      <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
+                          <i data-lucide="mail" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div>
+                          <div class="text-white font-semibold text-sm">VS Round Table</div>
+                          <div class="text-gray-500 text-xs">Weekly Deal Newsletter</div>
+                        </div>
+                      </div>
+                      <div class="space-y-3">
+                        <div class="bg-white/5 rounded-lg p-3">
+                          <div class="flex items-center gap-2 mb-1">
+                            <span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded-full">AI/SaaS</span>
+                            <span class="text-green-400 text-xs">NEW</span>
+                          </div>
+                          <div class="text-white text-sm font-medium">AI 기반 HR 솔루션 스타트업</div>
+                          <div class="text-gray-500 text-xs mt-1">Series A · 목표 100억</div>
+                        </div>
+                        <div class="bg-white/5 rounded-lg p-3">
+                          <div class="flex items-center gap-2 mb-1">
+                            <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded-full">핀테크</span>
+                            <span class="text-green-400 text-xs">NEW</span>
+                          </div>
+                          <div class="text-white text-sm font-medium">블록체인 B2B 결제 플랫폼</div>
+                          <div class="text-gray-500 text-xs mt-1">Series B · 목표 300억</div>
+                        </div>
+                        <div class="bg-white/5 rounded-lg p-3 opacity-60">
+                          <div class="flex items-center gap-2 mb-1">
+                            <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">헬스케어</span>
+                          </div>
+                          <div class="text-white text-sm font-medium">디지털 헬스케어 플랫폼</div>
+                          <div class="text-gray-500 text-xs mt-1">Pre-A · 목표 50억</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
