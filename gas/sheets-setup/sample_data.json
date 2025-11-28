@@ -203,6 +203,7 @@
   
   "System_Config": {
     "headers": ["KEY", "VALUE", "Description"],
+    "note": "※ 솔라피 API는 보안상 Script Properties에 별도 저장 (SOLAPI_API_KEY, SOLAPI_API_SECRET, SOLAPI_SENDER)",
     "required_configs": [
       {
         "KEY": "UCANSIGN_API_KEY",
@@ -218,16 +219,6 @@
         "KEY": "UCANSIGN_TEMPLATE_ID",
         "VALUE": "",
         "Description": "NDA 문서 템플릿 ID"
-      },
-      {
-        "KEY": "SOLAPI_API_KEY",
-        "VALUE": "",
-        "Description": "솔라피 API 키 (https://solapi.com에서 발급)"
-      },
-      {
-        "KEY": "SOLAPI_API_SECRET",
-        "VALUE": "",
-        "Description": "솔라피 API 시크릿"
       },
       {
         "KEY": "GOOGLE_CHAT_WEBHOOK",
@@ -253,6 +244,24 @@
         "KEY": "DEFAULT_FEE_RATE",
         "VALUE": "3.0",
         "Description": "기본 수수료 확약률 (%)"
+      }
+    ],
+    "script_properties_required": [
+      {
+        "KEY": "MASTER_DB_ID",
+        "Description": "Google Sheets 스프레드시트 ID"
+      },
+      {
+        "KEY": "SOLAPI_API_KEY",
+        "Description": "솔라피 API 키"
+      },
+      {
+        "KEY": "SOLAPI_API_SECRET",
+        "Description": "솔라피 API 시크릿"
+      },
+      {
+        "KEY": "SOLAPI_SENDER",
+        "Description": "솔라피 발신번호 (인증된 번호)"
       }
     ]
   }

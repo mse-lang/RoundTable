@@ -36,10 +36,17 @@ const CONFIG_KEYS = {
   UCANSIGN_API_KEY: 'UCANSIGN_API_KEY',
   UCANSIGN_API_SECRET: 'UCANSIGN_API_SECRET',
   UCANSIGN_TEMPLATE_ID: 'UCANSIGN_TEMPLATE_ID',
-  SOLAPI_API_KEY: 'SOLAPI_API_KEY',
-  SOLAPI_API_SECRET: 'SOLAPI_API_SECRET',
   GOOGLE_CHAT_WEBHOOK: 'GOOGLE_CHAT_WEBHOOK',
   NDA_EXPIRY_DAYS: 'NDA_EXPIRY_DAYS'
+};
+
+/**
+ * 스크립트 속성 키 (민감한 API 키는 Script Properties에 저장)
+ */
+const SCRIPT_PROPERTY_KEYS = {
+  SOLAPI_API_KEY: 'SOLAPI_API_KEY',
+  SOLAPI_API_SECRET: 'SOLAPI_API_SECRET',
+  SOLAPI_SENDER: 'SOLAPI_SENDER'  // 발신번호
 };
 
 // ============================================================
@@ -217,13 +224,15 @@ function getUcanSignConfig() {
 }
 
 /**
- * 솔라피 API 설정 조회
- * @returns {Object} - { apiKey, apiSecret }
+ * 솔라피 API 설정 조회 (Script Properties에서 가져옴)
+ * @returns {Object} - { apiKey, apiSecret, sender }
  */
 function getSolapiConfig() {
+  const props = PropertiesService.getScriptProperties();
   return {
-    apiKey: getConfig(CONFIG_KEYS.SOLAPI_API_KEY),
-    apiSecret: getConfig(CONFIG_KEYS.SOLAPI_API_SECRET)
+    apiKey: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_API_KEY) || '',
+    apiSecret: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_API_SECRET) || '',
+    sender: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_SENDER) || ''
   };
 }
 
@@ -338,6 +347,178 @@ function sendToGoogleChat(message) {
   } catch (error) {
     Logger.log(`[Chat] 알림 전송 실패: ${error.message}`);
   }
+}
+
+// ============================================================
+// 솔라피 SMS/알림톡 발송
+// ============================================================
+
+/**
+ * 솔라피 API HMAC 서명 생성
+ * @param {string} apiKey - API 키
+ * @param {string} apiSecret - API 시크릿
+ * @returns {string} - Authorization 헤더 값
+ */
+function generateSolapiAuth(apiKey, apiSecret) {
+  const date = new Date().toISOString();
+  const salt = Utilities.getUuid();
+  const message = date + salt;
+  
+  const signature = Utilities.computeHmacSha256Signature(message, apiSecret);
+  const signatureHex = signature.map(b => ('0' + (b & 0xFF).toString(16)).slice(-2)).join('');
+  
+  return `HMAC-SHA256 apiKey=${apiKey}, date=${date}, salt=${salt}, signature=${signatureHex}`;
+}
+
+/**
+ * 솔라피로 SMS 발송
+ * @param {string} to - 수신 번호 (01012345678 형식)
+ * @param {string} text - 메시지 내용
+ * @returns {Object} - { success, messageId, message }
+ */
+function sendSMS(to, text) {
+  try {
+    const config = getSolapiConfig();
+    
+    if (!config.apiKey || !config.apiSecret) {
+      throw new Error('솔라피 API 키가 설정되지 않았습니다. Script Properties를 확인하세요.');
+    }
+    
+    if (!config.sender) {
+      throw new Error('솔라피 발신번호가 설정되지 않았습니다.');
+    }
+    
+    // 전화번호 정리
+    const cleanTo = to.replace(/[^0-9]/g, '');
+    
+    const payload = {
+      message: {
+        to: cleanTo,
+        from: config.sender,
+        text: text,
+        type: 'SMS'
+      }
+    };
+    
+    const response = UrlFetchApp.fetch('https://api.solapi.com/messages/v4/send', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'Authorization': generateSolapiAuth(config.apiKey, config.apiSecret)
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    
+    const result = JSON.parse(response.getContentText());
+    const statusCode = response.getResponseCode();
+    
+    if (statusCode >= 200 && statusCode < 300) {
+      Logger.log(`[Solapi] SMS 발송 성공: ${cleanTo}`);
+      return {
+        success: true,
+        messageId: result.messageId || result.groupId,
+        message: '발송 완료'
+      };
+    } else {
+      throw new Error(result.message || result.errorMessage || 'SMS 발송 실패');
+    }
+    
+  } catch (error) {
+    Logger.log(`[Solapi] SMS 발송 실패: ${error.message}`);
+    return {
+      success: false,
+      messageId: null,
+      message: error.message
+    };
+  }
+}
+
+/**
+ * 솔라피로 알림톡 발송
+ * @param {string} to - 수신 번호
+ * @param {string} templateId - 카카오 알림톡 템플릿 ID
+ * @param {Object} variables - 템플릿 변수 { 변수명: 값 }
+ * @returns {Object} - { success, messageId, message }
+ */
+function sendKakaoAlimtalk(to, templateId, variables = {}) {
+  try {
+    const config = getSolapiConfig();
+    
+    if (!config.apiKey || !config.apiSecret) {
+      throw new Error('솔라피 API 키가 설정되지 않았습니다.');
+    }
+    
+    const cleanTo = to.replace(/[^0-9]/g, '');
+    
+    const payload = {
+      message: {
+        to: cleanTo,
+        from: config.sender,
+        kakaoOptions: {
+          pfId: config.pfId || '',  // 카카오 채널 ID (필요시 추가)
+          templateId: templateId,
+          variables: variables
+        },
+        type: 'ATA'  // 알림톡
+      }
+    };
+    
+    const response = UrlFetchApp.fetch('https://api.solapi.com/messages/v4/send', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'Authorization': generateSolapiAuth(config.apiKey, config.apiSecret)
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    
+    const result = JSON.parse(response.getContentText());
+    const statusCode = response.getResponseCode();
+    
+    if (statusCode >= 200 && statusCode < 300) {
+      Logger.log(`[Solapi] 알림톡 발송 성공: ${cleanTo}`);
+      return {
+        success: true,
+        messageId: result.messageId || result.groupId,
+        message: '발송 완료'
+      };
+    } else {
+      throw new Error(result.message || result.errorMessage || '알림톡 발송 실패');
+    }
+    
+  } catch (error) {
+    Logger.log(`[Solapi] 알림톡 발송 실패: ${error.message}`);
+    return {
+      success: false,
+      messageId: null,
+      message: error.message
+    };
+  }
+}
+
+/**
+ * NDA 서명 완료 알림 SMS 발송
+ * @param {string} phone - 수신자 전화번호
+ * @param {string} dealId - 딜 ID
+ * @param {string} userName - 사용자 이름
+ */
+function sendNDACompleteNotification(phone, dealId, userName) {
+  const message = `[VS AI ERP] ${userName}님, NDA 서명이 완료되었습니다. 데이터룸 접근 권한이 부여되었습니다. (딜: ${dealId})`;
+  return sendSMS(phone, message);
+}
+
+/**
+ * 라운드 테이블 신청 확인 SMS 발송
+ * @param {string} phone - 수신자 전화번호
+ * @param {string} rtId - 라운드 테이블 ID
+ * @param {string} dateTime - 일시
+ * @param {string} location - 장소
+ */
+function sendRoundTableConfirmation(phone, rtId, dateTime, location) {
+  const message = `[VS AI ERP] 라운드테이블 참가 확정!\n일시: ${dateTime}\n장소: ${location}\n(${rtId})`;
+  return sendSMS(phone, message);
 }
 
 // ============================================================

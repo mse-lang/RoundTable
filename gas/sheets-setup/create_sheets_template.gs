@@ -368,16 +368,16 @@ function createSystemConfigSheet(ss) {
   formatHeader(sheet, headers.length);
   
   // 초기 설정값
+  // ※ 솔라피 API는 Script Properties에 별도 저장 (SOLAPI_API_KEY, SOLAPI_API_SECRET, SOLAPI_SENDER)
   const configData = [
     ['UCANSIGN_API_KEY', '', '유캔사인 API 키 (https://ucansign.com에서 발급)'],
     ['UCANSIGN_API_SECRET', '', '유캔사인 API 시크릿'],
     ['UCANSIGN_TEMPLATE_ID', '', 'NDA 문서 템플릿 ID'],
-    ['SOLAPI_API_KEY', '', '솔라피 API 키 (https://solapi.com에서 발급)'],
-    ['SOLAPI_API_SECRET', '', '솔라피 API 시크릿'],
     ['GOOGLE_CHAT_WEBHOOK', '', 'Google Chat 웹훅 URL (운영 알림용)'],
     ['NDA_EXPIRY_DAYS', '90', 'NDA 접근 권한 만료 일수 (기본 90일)'],
     ['ADMIN_EMAIL', 'admin@venturesquare.net', '관리자 이메일'],
-    ['SERVICE_NAME', 'VS AI ERP', '서비스명']
+    ['SERVICE_NAME', 'VS AI ERP', '서비스명'],
+    ['DEFAULT_FEE_RATE', '3.0', '기본 수수료 확약률 (%)']
   ];
   
   sheet.getRange(2, 1, configData.length, 3).setValues(configData);
