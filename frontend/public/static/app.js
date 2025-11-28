@@ -1,6 +1,6 @@
 /**
  * VS AI ERP - Frontend Application
- * 딜룸 프론트엔드 JavaScript
+ * Dark Theme + Glassmorphism Design
  */
 
 // ============================================================
@@ -34,6 +34,11 @@ const state = {
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   
+  // Initialize Lucide icons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+  
   if (path === '/' || path === '') {
     initDealList();
   } else if (path.startsWith('/deal/')) {
@@ -50,10 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================================
 
 async function initDealList() {
-  // 필터 옵션 로드
   await loadFilterOptions();
-  
-  // 딜 목록 로드
   await loadDeals();
   
   // 필터 이벤트 바인딩
@@ -78,7 +80,6 @@ async function initDealList() {
 
 async function loadFilterOptions() {
   try {
-    // 데모 데이터 (GAS 연동 시 API 호출로 교체)
     const industries = ['IT/소프트웨어', '바이오/헬스케어', '핀테크', '이커머스', '에듀테크'];
     const revenues = ['Pre-Revenue', '1억 미만', '1억~5억', '5억~10억', '10억~50억', '50억~100억', '100억 이상'];
     
@@ -112,14 +113,14 @@ async function loadDeals() {
   
   // 로딩 표시
   grid.innerHTML = `
-    <div class="col-span-full text-center py-12">
-      <i class="fas fa-spinner fa-spin text-4xl text-gray-300"></i>
-      <p class="text-gray-500 mt-4">딜 정보를 불러오는 중...</p>
+    <div class="col-span-full flex flex-col items-center justify-center py-20">
+      <div class="spinner mb-4"></div>
+      <p class="text-gray-500">딜 정보를 불러오는 중...</p>
     </div>
   `;
   
   try {
-    // 데모 데이터 (GAS 연동 시 API 호출로 교체)
+    // 데모 데이터
     const demoDeals = [
       {
         DEAL_ID: 'DEAL_20241128_001',
@@ -183,84 +184,112 @@ async function loadDeals() {
     }
     
     // 통계 업데이트
-    document.getElementById('stat-deals').textContent = filteredDeals.length;
+    const statEl = document.getElementById('stat-deals');
+    if (statEl) statEl.textContent = filteredDeals.length;
     
     // 딜 카드 렌더링
     if (filteredDeals.length === 0) {
       grid.innerHTML = `
-        <div class="col-span-full text-center py-12">
-          <i class="fas fa-inbox text-4xl text-gray-300"></i>
-          <p class="text-gray-500 mt-4">조건에 맞는 딜이 없습니다.</p>
+        <div class="col-span-full flex flex-col items-center justify-center py-20">
+          <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
+            <i data-lucide="inbox" class="w-8 h-8 text-gray-600"></i>
+          </div>
+          <p class="text-gray-500">조건에 맞는 딜이 없습니다.</p>
         </div>
       `;
+      lucide.createIcons();
       return;
     }
     
     grid.innerHTML = filteredDeals.map(deal => dealCardHTML(deal)).join('');
+    lucide.createIcons();
     
   } catch (error) {
     console.error('딜 목록 로드 실패:', error);
     grid.innerHTML = `
-      <div class="col-span-full text-center py-12">
-        <i class="fas fa-exclamation-circle text-4xl text-red-300"></i>
-        <p class="text-gray-500 mt-4">딜 정보를 불러오는데 실패했습니다.</p>
+      <div class="col-span-full flex flex-col items-center justify-center py-20">
+        <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
+          <i data-lucide="alert-circle" class="w-8 h-8 text-red-400"></i>
+        </div>
+        <p class="text-gray-500">딜 정보를 불러오는데 실패했습니다.</p>
       </div>
     `;
+    lucide.createIcons();
   }
 }
 
-// 딜 카드 HTML 생성
+// 딜 카드 HTML 생성 (Dark Theme)
 function dealCardHTML(deal) {
   const industryIcons = {
-    'IT/소프트웨어': 'fa-laptop-code',
-    '바이오/헬스케어': 'fa-heartbeat',
-    '핀테크': 'fa-coins',
-    '이커머스': 'fa-shopping-cart',
-    '에듀테크': 'fa-graduation-cap'
+    'IT/소프트웨어': 'laptop',
+    '바이오/헬스케어': 'heart-pulse',
+    '핀테크': 'coins',
+    '이커머스': 'shopping-cart',
+    '에듀테크': 'graduation-cap'
   };
   
-  const icon = industryIcons[deal.Industry] || 'fa-briefcase';
+  const industryColors = {
+    'IT/소프트웨어': 'blue',
+    '바이오/헬스케어': 'green',
+    '핀테크': 'yellow',
+    '이커머스': 'purple',
+    '에듀테크': 'orange'
+  };
+  
+  const dealTypeColors = {
+    '투자유치': 'bg-green-500/20 text-green-400',
+    '매각': 'bg-purple-500/20 text-purple-400',
+    'M&A': 'bg-orange-500/20 text-orange-400'
+  };
+  
+  const icon = industryIcons[deal.Industry] || 'briefcase';
+  const color = industryColors[deal.Industry] || 'blue';
+  const typeColor = dealTypeColors[deal.Deal_Type] || 'bg-gray-500/20 text-gray-400';
   
   return `
-    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-      <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-            <i class="fas ${icon} text-2xl"></i>
+    <div class="deal-card bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden">
+      <!-- Header -->
+      <div class="p-6 border-b border-white/10">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 bg-${color}-500/20 rounded-xl flex items-center justify-center">
+            <i data-lucide="${icon}" class="w-6 h-6 text-${color}-400"></i>
           </div>
-          <span class="px-3 py-1 rounded-full text-xs font-medium bg-white/20">
+          <span class="px-3 py-1 rounded-full text-xs font-medium ${typeColor}">
             ${deal.Deal_Type || '투자유치'}
           </span>
         </div>
-        <div class="text-sm opacity-80 mb-1">${deal.Industry || '기타'}</div>
-        <div class="text-xs opacity-60">${deal.DEAL_ID}</div>
+        <div class="text-sm text-gray-400 mb-1">${deal.Industry || '기타'}</div>
+        <div class="text-xs text-gray-600">${deal.DEAL_ID}</div>
       </div>
       
+      <!-- Body -->
       <div class="p-6">
-        <p class="text-gray-600 text-sm mb-4 line-clamp-3 min-h-[60px]">
+        <p class="text-gray-300 text-sm mb-6 line-clamp-3 min-h-[60px]">
           ${deal.Summary || '상세 정보는 NDA 서명 후 열람 가능합니다.'}
         </p>
         
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="bg-white/5 rounded-xl p-3">
             <div class="text-xs text-gray-500 mb-1">매출 규모</div>
-            <div class="font-semibold text-gray-900">${deal.Revenue_Range || '-'}</div>
+            <div class="font-semibold text-white text-sm">${deal.Revenue_Range || '-'}</div>
           </div>
-          <div>
-            <div class="text-xs text-gray-500 mb-1">희망 밸류</div>
-            <div class="font-semibold text-blue-600">${deal.Target_Valuation || '-'}</div>
+          <div class="bg-blue-500/10 rounded-xl p-3">
+            <div class="text-xs text-blue-400 mb-1">희망 밸류</div>
+            <div class="font-semibold text-blue-400 text-sm">${deal.Target_Valuation || '-'}</div>
           </div>
         </div>
         
         <div class="flex gap-2">
           <a href="/deal/${deal.DEAL_ID}" 
-            class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-center text-sm font-medium hover:bg-gray-200 transition">
-            <i class="fas fa-eye mr-1"></i>티저 보기
+            class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-xl text-center text-sm font-medium transition-colors flex items-center justify-center gap-1">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+            티저 보기
           </a>
           <button 
             onclick="openNDAModal('${deal.DEAL_ID}')"
-            class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-center text-sm font-medium hover:bg-blue-700 transition">
-            <i class="fas fa-file-signature mr-1"></i>상세 열람
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-center text-sm font-medium transition-colors flex items-center justify-center gap-1">
+            <i data-lucide="file-signature" class="w-4 h-4"></i>
+            상세 열람
           </button>
         </div>
       </div>
@@ -279,7 +308,7 @@ async function initDealDetail() {
   if (!dealId) return;
   
   try {
-    // 데모 데이터 (GAS 연동 시 API 호출로 교체)
+    // 데모 데이터
     const deal = {
       DEAL_ID: dealId,
       Industry: 'IT/소프트웨어',
@@ -291,22 +320,23 @@ async function initDealDetail() {
     };
     
     container.innerHTML = `
-      <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white">
+        <div class="p-8 border-b border-white/10 bg-gradient-to-br from-blue-600/20 to-purple-600/10">
           <div class="flex items-center gap-4 mb-4">
-            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
-              <i class="fas fa-laptop-code text-3xl"></i>
+            <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center">
+              <i data-lucide="laptop" class="w-8 h-8 text-blue-400"></i>
             </div>
             <div>
-              <div class="text-sm opacity-80">${deal.Industry}</div>
-              <h1 class="text-2xl font-bold">${deal.DEAL_ID}</h1>
+              <div class="text-sm text-gray-400">${deal.Industry}</div>
+              <h1 class="text-2xl font-bold text-white">${deal.DEAL_ID}</h1>
             </div>
           </div>
           <div class="flex gap-3">
-            <span class="px-3 py-1 rounded-full text-sm bg-white/20">${deal.Deal_Type}</span>
-            <span class="px-3 py-1 rounded-full text-sm bg-green-400/30 text-green-100">
-              <i class="fas fa-circle text-xs mr-1"></i>${deal.Stage}
+            <span class="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400">${deal.Deal_Type}</span>
+            <span class="px-3 py-1 rounded-full text-sm bg-blue-500/20 text-blue-400 flex items-center gap-1">
+              <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+              ${deal.Stage}
             </span>
           </div>
         </div>
@@ -315,74 +345,81 @@ async function initDealDetail() {
         <div class="p-8">
           <!-- Teaser Info -->
           <div class="mb-8">
-            <h2 class="text-lg font-bold text-gray-900 mb-4">
-              <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="info" class="w-5 h-5 text-blue-400"></i>
               티저 정보
             </h2>
-            <p class="text-gray-600 leading-relaxed">
+            <p class="text-gray-300 leading-relaxed">
               ${deal.Summary}
             </p>
           </div>
           
           <!-- Key Metrics -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <div class="bg-white/5 rounded-xl p-4 text-center">
               <div class="text-sm text-gray-500 mb-1">매출 규모</div>
-              <div class="text-lg font-bold text-gray-900">${deal.Revenue_Range}</div>
+              <div class="text-lg font-bold text-white">${deal.Revenue_Range}</div>
             </div>
-            <div class="bg-blue-50 rounded-xl p-4 text-center">
-              <div class="text-sm text-blue-600 mb-1">희망 밸류</div>
-              <div class="text-lg font-bold text-blue-700">${deal.Target_Valuation}</div>
+            <div class="bg-blue-500/10 rounded-xl p-4 text-center">
+              <div class="text-sm text-blue-400 mb-1">희망 밸류</div>
+              <div class="text-lg font-bold text-blue-400">${deal.Target_Valuation}</div>
             </div>
-            <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <div class="bg-white/5 rounded-xl p-4 text-center">
               <div class="text-sm text-gray-500 mb-1">딜 유형</div>
-              <div class="text-lg font-bold text-gray-900">${deal.Deal_Type}</div>
+              <div class="text-lg font-bold text-white">${deal.Deal_Type}</div>
             </div>
-            <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <div class="bg-white/5 rounded-xl p-4 text-center">
               <div class="text-sm text-gray-500 mb-1">업종</div>
-              <div class="text-lg font-bold text-gray-900">${deal.Industry}</div>
+              <div class="text-lg font-bold text-white">${deal.Industry}</div>
             </div>
           </div>
           
           <!-- Full Report Section (Locked) -->
-          <div class="bg-gray-100 rounded-xl p-8 text-center mb-8">
-            <div class="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i class="fas fa-lock text-3xl text-gray-500"></i>
+          <div class="bg-white/5 rounded-2xl p-8 text-center mb-8 border border-white/10">
+            <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="lock" class="w-8 h-8 text-gray-500"></i>
             </div>
-            <h3 class="text-xl font-bold text-gray-700 mb-2">상세 정보는 NDA 서명 후 열람 가능합니다</h3>
+            <h3 class="text-xl font-bold text-white mb-2">상세 정보는 NDA 서명 후 열람 가능합니다</h3>
             <p class="text-gray-500 mb-6">
               투자심사보고서, 재무제표, 기술 자료 등 상세 정보를 확인하시려면<br/>
               NDA(비밀유지계약) 서명이 필요합니다.
             </p>
             <button onclick="openNDAModal('${deal.DEAL_ID}')"
-              class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition inline-flex items-center gap-2">
-              <i class="fas fa-file-signature"></i>
+              class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors inline-flex items-center gap-2">
+              <i data-lucide="file-signature" class="w-5 h-5"></i>
               NDA 서명하고 열람하기
             </button>
           </div>
           
           <!-- Actions -->
           <div class="flex gap-4">
-            <a href="/" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg text-center font-medium hover:bg-gray-200 transition">
-              <i class="fas fa-arrow-left mr-2"></i>목록으로
+            <a href="/" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl text-center font-medium transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="arrow-left" class="w-5 h-5"></i>
+              목록으로
             </a>
             <button onclick="openNDAModal('${deal.DEAL_ID}')"
-              class="flex-1 bg-blue-600 text-white py-3 rounded-lg text-center font-medium hover:bg-blue-700 transition">
-              <i class="fas fa-calendar-plus mr-2"></i>미팅 요청
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-center font-medium transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="calendar-plus" class="w-5 h-5"></i>
+              미팅 요청
             </button>
           </div>
         </div>
       </div>
     `;
     
+    lucide.createIcons();
+    
   } catch (error) {
     console.error('딜 상세 로드 실패:', error);
     container.innerHTML = `
-      <div class="text-center py-12">
-        <i class="fas fa-exclamation-circle text-4xl text-red-300"></i>
-        <p class="text-gray-500 mt-4">딜 정보를 불러오는데 실패했습니다.</p>
+      <div class="flex flex-col items-center justify-center py-20">
+        <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
+          <i data-lucide="alert-circle" class="w-8 h-8 text-red-400"></i>
+        </div>
+        <p class="text-gray-500">딜 정보를 불러오는데 실패했습니다.</p>
       </div>
     `;
+    lucide.createIcons();
   }
 }
 
@@ -400,6 +437,7 @@ function openNDAModal(dealId) {
     dealIdInput.value = dealId;
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    lucide.createIcons();
   }
 }
 
@@ -434,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 로딩 상태
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>처리 중...';
+      submitBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div><span>처리 중...</span>';
       errorDiv.classList.add('hidden');
       
       try {
@@ -442,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         // 성공 시
-        alert('NDA 서명 요청이 발송되었습니다.\n카카오톡을 확인해주세요.');
+        showToast('NDA 서명 요청이 발송되었습니다. 카카오톡을 확인해주세요.', 'success');
         closeNDAModal();
         ndaForm.reset();
         
@@ -451,7 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsg.textContent = error.message || 'NDA 요청 중 오류가 발생했습니다.';
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>서명 요청하기';
+        submitBtn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i>서명 요청하기';
+        lucide.createIcons();
       }
     });
   }
@@ -460,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 모달 외부 클릭 시 닫기
 document.addEventListener('click', (e) => {
   const modal = document.getElementById('nda-modal');
-  if (modal && e.target === modal) {
+  if (modal && e.target.classList.contains('modal-overlay')) {
     closeNDAModal();
   }
 });
@@ -478,7 +517,6 @@ function renderCalendar() {
   const grid = document.getElementById('calendar-grid');
   if (!grid) return;
   
-  // 현재 월의 날짜 생성
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -490,23 +528,21 @@ function renderCalendar() {
   
   // 시작 요일까지 빈 셀
   for (let i = 0; i < firstDay.getDay(); i++) {
-    html += '<div class="p-4 border-b border-r bg-gray-50"></div>';
+    html += '<div class="p-4 border-b border-r border-white/5 bg-white/[0.02] min-h-[100px]"></div>';
   }
   
   // 날짜 셀
   for (let day = 1; day <= lastDay.getDate(); day++) {
     const isToday = day === now.getDate();
-    const hasEvent = [15, 20, 22].includes(day); // 데모 이벤트
+    const hasEvent = [15, 20, 22].includes(day);
     
     html += `
-      <div class="p-4 border-b border-r min-h-[100px] ${isToday ? 'bg-blue-50' : 'hover:bg-gray-50'} transition cursor-pointer"
+      <div class="calendar-cell p-4 border-b border-r border-white/5 min-h-[100px] cursor-pointer ${isToday ? 'bg-blue-500/10' : 'hover:bg-white/5'}"
            onclick="showDayEvents(${year}, ${month + 1}, ${day})">
-        <div class="font-medium ${isToday ? 'text-blue-600' : 'text-gray-700'}">${day}</div>
+        <div class="font-medium mb-2 ${isToday ? 'text-blue-400' : 'text-gray-400'}">${day}</div>
         ${hasEvent ? `
-          <div class="mt-2">
-            <div class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded truncate">
-              라운드테이블
-            </div>
+          <div class="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded-lg truncate">
+            라운드테이블
           </div>
         ` : ''}
       </div>
@@ -517,14 +553,14 @@ function renderCalendar() {
   
   // 월 표시 업데이트
   const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-  document.getElementById('current-month').textContent = `${year}년 ${monthNames[month]}`;
+  const monthEl = document.getElementById('current-month');
+  if (monthEl) monthEl.textContent = `${year}년 ${monthNames[month]}`;
 }
 
 function loadUpcomingEvents() {
   const container = document.getElementById('upcoming-events');
   if (!container) return;
   
-  // 데모 이벤트
   const events = [
     {
       RT_ID: 'RT_202412_001',
@@ -543,36 +579,40 @@ function loadUpcomingEvents() {
   ];
   
   container.innerHTML = events.map(event => `
-    <div class="bg-white rounded-xl shadow p-6 flex items-center justify-between">
+    <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div class="flex items-center gap-4">
-        <div class="w-14 h-14 bg-blue-100 rounded-xl flex flex-col items-center justify-center">
-          <span class="text-xs text-blue-600 font-medium">${event.Date_Time.split(' ')[0].split('-')[1]}월</span>
-          <span class="text-xl font-bold text-blue-700">${event.Date_Time.split(' ')[0].split('-')[2]}</span>
+        <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex flex-col items-center justify-center">
+          <span class="text-xs text-purple-400 font-medium">${event.Date_Time.split(' ')[0].split('-')[1]}월</span>
+          <span class="text-xl font-bold text-purple-400">${event.Date_Time.split(' ')[0].split('-')[2]}</span>
         </div>
         <div>
-          <div class="font-semibold text-gray-900">${event.RT_ID}</div>
-          <div class="text-sm text-gray-500">
-            <i class="fas fa-map-marker-alt mr-1"></i>${event.Location}
+          <div class="font-semibold text-white">${event.RT_ID}</div>
+          <div class="text-sm text-gray-500 flex items-center gap-1 mt-1">
+            <i data-lucide="map-pin" class="w-4 h-4"></i>
+            ${event.Location}
           </div>
-          <div class="text-sm text-gray-500">
-            <i class="fas fa-clock mr-1"></i>${event.Date_Time.split(' ')[1]}
+          <div class="text-sm text-gray-500 flex items-center gap-1">
+            <i data-lucide="clock" class="w-4 h-4"></i>
+            ${event.Date_Time.split(' ')[1]}
           </div>
         </div>
       </div>
-      <div class="text-right">
-        <div class="text-sm text-gray-500 mb-2">
-          잔여 <span class="font-bold text-blue-600">${event.Available_Slots}</span>석
+      <div class="flex items-center gap-4">
+        <div class="text-sm text-gray-400">
+          잔여 <span class="font-bold text-blue-400">${event.Available_Slots}</span>석
         </div>
         <button onclick="openRTModal('${event.RT_ID}')"
-          class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+          class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+          <i data-lucide="calendar-plus" class="w-4 h-4"></i>
           참가 신청
         </button>
       </div>
     </div>
   `).join('');
+  
+  lucide.createIcons();
 }
 
-// 라운드테이블 모달
 function openRTModal(rtId) {
   const modal = document.getElementById('rt-apply-modal');
   const rtIdInput = document.getElementById('rt-id');
@@ -580,9 +620,10 @@ function openRTModal(rtId) {
   
   if (modal && rtIdInput) {
     rtIdInput.value = rtId;
-    rtInfo.innerHTML = `<strong>${rtId}</strong>에 참가 신청합니다.`;
+    rtInfo.innerHTML = `<strong class="text-blue-400">${rtId}</strong><span class="text-blue-200/80">에 참가 신청합니다.</span>`;
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    lucide.createIcons();
   }
 }
 
@@ -601,14 +642,17 @@ function closeRTModal() {
 function initMyPage() {
   const savedEmail = localStorage.getItem('userEmail');
   if (savedEmail) {
-    document.getElementById('user-email').value = savedEmail;
+    const emailInput = document.getElementById('user-email');
+    if (emailInput) emailInput.value = savedEmail;
   }
 }
 
 async function loadUserStatus() {
-  const email = document.getElementById('user-email').value;
+  const emailInput = document.getElementById('user-email');
+  const email = emailInput?.value;
+  
   if (!email) {
-    alert('이메일을 입력해주세요.');
+    showToast('이메일을 입력해주세요.', 'error');
     return;
   }
   
@@ -616,41 +660,47 @@ async function loadUserStatus() {
   
   // 데모 데이터
   document.getElementById('my-nda-list').innerHTML = `
-    <div class="divide-y">
+    <div class="divide-y divide-white/10">
       <div class="py-4 flex items-center justify-between">
         <div>
-          <div class="font-medium">DEAL_20241128_001</div>
+          <div class="font-medium text-white">DEAL_20241128_001</div>
           <div class="text-sm text-gray-500">IT/소프트웨어 • 투자유치</div>
         </div>
-        <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">
-          <i class="fas fa-check mr-1"></i>Signed
+        <span class="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1">
+          <i data-lucide="check" class="w-3 h-3"></i>
+          Signed
         </span>
       </div>
       <div class="py-4 flex items-center justify-between">
         <div>
-          <div class="font-medium">DEAL_20241128_002</div>
+          <div class="font-medium text-white">DEAL_20241128_002</div>
           <div class="text-sm text-gray-500">바이오/헬스케어 • 매각</div>
         </div>
-        <span class="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-700">
-          <i class="fas fa-clock mr-1"></i>Pending
+        <span class="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1">
+          <i data-lucide="clock" class="w-3 h-3"></i>
+          Pending
         </span>
       </div>
     </div>
   `;
   
   document.getElementById('my-rt-list').innerHTML = `
-    <div class="divide-y">
+    <div class="divide-y divide-white/10">
       <div class="py-4 flex items-center justify-between">
         <div>
-          <div class="font-medium">RT_202412_001</div>
+          <div class="font-medium text-white">RT_202412_001</div>
           <div class="text-sm text-gray-500">2024-12-15 14:00 • 강남 VS스퀘어</div>
         </div>
-        <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
-          <i class="fas fa-calendar-check mr-1"></i>확정
+        <span class="px-3 py-1 rounded-full text-sm bg-blue-500/20 text-blue-400 flex items-center gap-1">
+          <i data-lucide="calendar-check" class="w-3 h-3"></i>
+          확정
         </span>
       </div>
     </div>
   `;
+  
+  lucide.createIcons();
+  showToast('조회가 완료되었습니다.', 'success');
 }
 
 // ============================================================
@@ -661,5 +711,24 @@ function toggleMobileMenu() {
   const menu = document.getElementById('mobile-menu');
   if (menu) {
     menu.classList.toggle('hidden');
+    lucide.createIcons();
   }
+}
+
+function showToast(message, type = 'info') {
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `
+    <div class="flex items-center gap-2">
+      <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="w-5 h-5"></i>
+      <span>${message}</span>
+    </div>
+  `;
+  
+  document.body.appendChild(toast);
+  lucide.createIcons();
+  
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
 }

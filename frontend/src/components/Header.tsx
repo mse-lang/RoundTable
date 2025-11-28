@@ -1,60 +1,67 @@
 export const Header = () => {
   return (
-    <header class="bg-white shadow-sm sticky top-0 z-40">
+    <header class="sticky top-0 z-40 bg-glass border-b border-white/10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           {/* Logo */}
-          <a href="/" class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <i class="fas fa-chart-line text-white text-lg"></i>
+          <a href="/" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
+              <i data-lucide="trending-up" class="w-5 h-5 text-white"></i>
             </div>
             <div>
-              <div class="font-bold text-lg text-gray-900">VS AI ERP</div>
+              <div class="font-bold text-lg text-white">VS AI ERP</div>
               <div class="text-xs text-gray-500">팩트시트 데이터룸</div>
             </div>
           </a>
 
-          {/* Navigation */}
-          <nav class="hidden md:flex items-center gap-8">
-            <a href="/" class="text-gray-600 hover:text-primary font-medium transition">
+          {/* Navigation - Desktop */}
+          <nav class="hidden md:flex items-center gap-1">
+            <a href="/" class="px-4 py-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all">
               딜룸
             </a>
-            <a href="/round-table" class="text-gray-600 hover:text-primary font-medium transition">
+            <a href="/round-table" class="px-4 py-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all">
               라운드테이블
             </a>
-            <a href="/my-page" class="text-gray-600 hover:text-primary font-medium transition">
+            <a href="/my-page" class="px-4 py-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg font-medium transition-all">
               마이페이지
             </a>
           </nav>
 
           {/* Actions */}
-          <div class="flex items-center gap-4">
-            <a href="/register" class="hidden sm:inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition">
-              <i class="fas fa-plus"></i>
+          <div class="flex items-center gap-3">
+            <a href="/register" class="hidden sm:inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-blue-600/20">
+              <i data-lucide="plus" class="w-4 h-4"></i>
               딜 등록
             </a>
             
             {/* Mobile Menu Button */}
-            <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" onclick="toggleMobileMenu()">
-              <i class="fas fa-bars text-xl"></i>
+            <button 
+              class="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+              onclick="toggleMobileMenu()"
+            >
+              <i data-lucide="menu" class="w-6 h-6 text-gray-400"></i>
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        <div id="mobile-menu" class="hidden md:hidden pb-4">
-          <nav class="flex flex-col gap-2">
-            <a href="/" class="px-4 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
-              <i class="fas fa-th-large mr-2 w-5"></i>딜룸
+        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-white/10 mt-2 pt-4">
+          <nav class="flex flex-col gap-1">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-300 hover:text-white transition-all">
+              <i data-lucide="layout-grid" class="w-5 h-5"></i>
+              딜룸
             </a>
-            <a href="/round-table" class="px-4 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
-              <i class="fas fa-users mr-2 w-5"></i>라운드테이블
+            <a href="/round-table" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-300 hover:text-white transition-all">
+              <i data-lucide="users" class="w-5 h-5"></i>
+              라운드테이블
             </a>
-            <a href="/my-page" class="px-4 py-2 rounded-lg hover:bg-gray-100 text-gray-600">
-              <i class="fas fa-user mr-2 w-5"></i>마이페이지
+            <a href="/my-page" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-300 hover:text-white transition-all">
+              <i data-lucide="user" class="w-5 h-5"></i>
+              마이페이지
             </a>
-            <a href="/register" class="px-4 py-2 rounded-lg bg-primary text-white text-center">
-              <i class="fas fa-plus mr-2"></i>딜 등록
+            <a href="/register" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white mt-2">
+              <i data-lucide="plus" class="w-5 h-5"></i>
+              딜 등록
             </a>
           </nav>
         </div>

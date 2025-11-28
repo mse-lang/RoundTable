@@ -2,67 +2,96 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear()
   
   return (
-    <footer class="bg-gray-900 text-gray-400">
+    <footer class="bg-black/50 border-t border-white/10 mt-auto">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div class="col-span-1 md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <i class="fas fa-chart-line text-white text-lg"></i>
+              <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <i data-lucide="trending-up" class="w-5 h-5 text-white"></i>
               </div>
               <div>
                 <div class="font-bold text-lg text-white">VS AI ERP</div>
-                <div class="text-xs">팩트시트 데이터룸</div>
+                <div class="text-xs text-gray-500">팩트시트 데이터룸</div>
               </div>
             </div>
-            <p class="text-sm max-w-md">
+            <p class="text-sm text-gray-400 max-w-md leading-relaxed">
               AI 기반 투자 분석과 NDA 보호 시스템으로 안전한 딜소싱 환경을 제공합니다.
               스타트업과 투자자를 연결하는 O2O 플랫폼입니다.
             </p>
+            
+            {/* Social Links */}
+            <div class="flex gap-3 mt-6">
+              <a href="#" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <i data-lucide="linkedin" class="w-5 h-5 text-gray-400 hover:text-white"></i>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <i data-lucide="instagram" class="w-5 h-5 text-gray-400 hover:text-white"></i>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <i data-lucide="youtube" class="w-5 h-5 text-gray-400 hover:text-white"></i>
+              </a>
+            </div>
           </div>
 
           {/* Links */}
           <div>
             <h4 class="text-white font-semibold mb-4">서비스</h4>
-            <ul class="space-y-2 text-sm">
-              <li><a href="/" class="hover:text-white transition">딜룸</a></li>
-              <li><a href="/round-table" class="hover:text-white transition">라운드테이블</a></li>
-              <li><a href="/register" class="hover:text-white transition">딜 등록</a></li>
-              <li><a href="/my-page" class="hover:text-white transition">마이페이지</a></li>
+            <ul class="space-y-3 text-sm">
+              <li>
+                <a href="/" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                  <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                  딜룸
+                </a>
+              </li>
+              <li>
+                <a href="/round-table" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4"></i>
+                  라운드테이블
+                </a>
+              </li>
+              <li>
+                <a href="/register" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                  <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                  딜 등록
+                </a>
+              </li>
+              <li>
+                <a href="/my-page" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                  마이페이지
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
             <h4 class="text-white font-semibold mb-4">문의</h4>
-            <ul class="space-y-2 text-sm">
-              <li>
-                <i class="fas fa-envelope mr-2 w-4"></i>
+            <ul class="space-y-3 text-sm text-gray-400">
+              <li class="flex items-center gap-2">
+                <i data-lucide="mail" class="w-4 h-4"></i>
                 contact@venturesquare.net
               </li>
-              <li>
-                <i class="fas fa-phone mr-2 w-4"></i>
+              <li class="flex items-center gap-2">
+                <i data-lucide="phone" class="w-4 h-4"></i>
                 02-1234-5678
               </li>
-              <li>
-                <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+              <li class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4"></i>
                 서울시 강남구 테헤란로
               </li>
             </ul>
-            <div class="flex gap-4 mt-4">
-              <a href="#" class="hover:text-white transition"><i class="fab fa-facebook text-lg"></i></a>
-              <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin text-lg"></i></a>
-              <a href="#" class="hover:text-white transition"><i class="fab fa-instagram text-lg"></i></a>
-            </div>
           </div>
         </div>
 
-        <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+        {/* Bottom */}
+        <div class="border-t border-white/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
           <p>© {currentYear} VentureSquare. All rights reserved.</p>
-          <div class="flex gap-6 mt-4 md:mt-0">
-            <a href="#" class="hover:text-white transition">이용약관</a>
-            <a href="#" class="hover:text-white transition">개인정보처리방침</a>
+          <div class="flex gap-6">
+            <a href="#" class="hover:text-white transition-colors">이용약관</a>
+            <a href="#" class="hover:text-white transition-colors">개인정보처리방침</a>
           </div>
         </div>
       </div>

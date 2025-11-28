@@ -13,14 +13,32 @@ export const renderer = jsxRenderer(({ children, title }) => {
         <script dangerouslySetInnerHTML={{
           __html: `
             tailwind.config = {
+              darkMode: 'class',
               theme: {
                 extend: {
                   colors: {
-                    primary: '#1a73e8',
-                    secondary: '#5f6368',
-                    accent: '#ea4335',
-                    dark: '#202124',
-                    light: '#f8f9fa'
+                    background: '#0a0a0a',
+                    foreground: '#ededed',
+                    card: 'rgba(17, 17, 17, 0.7)',
+                    'card-border': 'rgba(255, 255, 255, 0.1)',
+                    primary: {
+                      DEFAULT: '#3b82f6',
+                      hover: '#2563eb',
+                      50: '#eff6ff',
+                      100: '#dbeafe',
+                      200: '#bfdbfe',
+                      300: '#93c5fd',
+                      400: '#60a5fa',
+                      500: '#3b82f6',
+                      600: '#2563eb',
+                      700: '#1d4ed8',
+                    },
+                    success: '#10b981',
+                    warning: '#f59e0b',
+                    error: '#ef4444'
+                  },
+                  backdropBlur: {
+                    xs: '2px',
                   }
                 }
               }
@@ -28,26 +46,36 @@ export const renderer = jsxRenderer(({ children, title }) => {
           `
         }} />
         
-        {/* Font Awesome */}
-        <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+        {/* Lucide Icons - CDN */}
+        <script src="https://unpkg.com/lucide@latest"></script>
         
-        {/* Google Fonts */}
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+        {/* Google Fonts - Inter */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         
         {/* Custom Styles */}
         <link href="/static/style.css" rel="stylesheet" />
       </head>
-      <body class="font-['Noto_Sans_KR'] bg-gray-50 text-gray-900 min-h-screen">
+      <body class="font-sans bg-background text-foreground min-h-screen antialiased">
         {children}
-        
-        {/* Alpine.js for interactivity */}
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         
         {/* Axios for API calls */}
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
         
         {/* App Scripts */}
         <script src="/static/app.js"></script>
+        
+        {/* Initialize Lucide Icons */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            document.addEventListener('DOMContentLoaded', () => {
+              if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+              }
+            });
+          `
+        }} />
       </body>
     </html>
   )
