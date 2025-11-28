@@ -252,6 +252,10 @@
         "Description": "Google Sheets 스프레드시트 ID"
       },
       {
+        "KEY": "GEMINI_API_KEY",
+        "Description": "Gemini API 키 (문서분석/리포트 생성용)"
+      },
+      {
         "KEY": "SOLAPI_API_KEY",
         "Description": "솔라피 API 키"
       },

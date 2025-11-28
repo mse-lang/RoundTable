@@ -44,6 +44,10 @@ const CONFIG_KEYS = {
  * 스크립트 속성 키 (민감한 API 키는 Script Properties에 저장)
  */
 const SCRIPT_PROPERTY_KEYS = {
+  // 데이터베이스
+  MASTER_DB_ID: 'MASTER_DB_ID',                 // Google Sheets ID
+  // Gemini AI
+  GEMINI_API_KEY: 'GEMINI_API_KEY',             // Gemini API 키 (문서분석/리포트)
   // 솔라피 설정
   SOLAPI_API_KEY: 'SOLAPI_API_KEY',
   SOLAPI_API_SECRET: 'SOLAPI_API_SECRET',
@@ -249,6 +253,14 @@ function getSolapiConfig() {
  */
 function getPublicDataKey() {
   return PropertiesService.getScriptProperties().getProperty(SCRIPT_PROPERTY_KEYS.PUBLIC_DATA_KEY) || '';
+}
+
+/**
+ * Gemini API 키 조회 (Script Properties에서 가져옴)
+ * @returns {string}
+ */
+function getGeminiApiKey() {
+  return PropertiesService.getScriptProperties().getProperty(SCRIPT_PROPERTY_KEYS.GEMINI_API_KEY) || '';
 }
 
 /**
