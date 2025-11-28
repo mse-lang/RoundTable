@@ -260,8 +260,20 @@
         "Description": "솔라피 API 시크릿"
       },
       {
-        "KEY": "SOLAPI_SENDER",
+        "KEY": "SOLAPI_SENDER_PHONE",
         "Description": "솔라피 발신번호 (인증된 번호)"
+      },
+      {
+        "KEY": "SOLAPI_SENDER_NAME",
+        "Description": "솔라피 발신자명"
+      },
+      {
+        "KEY": "SOLAPI_PF_ID",
+        "Description": "카카오 채널 ID (알림톡 발송용)"
+      },
+      {
+        "KEY": "PUBLIC_DATA_KEY",
+        "Description": "공공데이터포털 API 키"
       }
     ]
   }

@@ -44,9 +44,14 @@ const CONFIG_KEYS = {
  * 스크립트 속성 키 (민감한 API 키는 Script Properties에 저장)
  */
 const SCRIPT_PROPERTY_KEYS = {
+  // 솔라피 설정
   SOLAPI_API_KEY: 'SOLAPI_API_KEY',
   SOLAPI_API_SECRET: 'SOLAPI_API_SECRET',
-  SOLAPI_SENDER: 'SOLAPI_SENDER'  // 발신번호
+  SOLAPI_SENDER_PHONE: 'SOLAPI_SENDER_PHONE',   // 발신번호
+  SOLAPI_SENDER_NAME: 'SOLAPI_SENDER_NAME',     // 발신자명
+  SOLAPI_PF_ID: 'SOLAPI_PF_ID',                 // 카카오 채널 ID (알림톡용)
+  // 공공데이터 API
+  PUBLIC_DATA_KEY: 'PUBLIC_DATA_KEY'            // 공공데이터포털 API 키
 };
 
 // ============================================================
@@ -225,15 +230,25 @@ function getUcanSignConfig() {
 
 /**
  * 솔라피 API 설정 조회 (Script Properties에서 가져옴)
- * @returns {Object} - { apiKey, apiSecret, sender }
+ * @returns {Object} - { apiKey, apiSecret, senderPhone, senderName, pfId }
  */
 function getSolapiConfig() {
   const props = PropertiesService.getScriptProperties();
   return {
     apiKey: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_API_KEY) || '',
     apiSecret: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_API_SECRET) || '',
-    sender: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_SENDER) || ''
+    senderPhone: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_SENDER_PHONE) || '',
+    senderName: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_SENDER_NAME) || '',
+    pfId: props.getProperty(SCRIPT_PROPERTY_KEYS.SOLAPI_PF_ID) || ''  // 카카오 채널 ID
   };
+}
+
+/**
+ * 공공데이터 API 키 조회 (Script Properties에서 가져옴)
+ * @returns {string}
+ */
+function getPublicDataKey() {
+  return PropertiesService.getScriptProperties().getProperty(SCRIPT_PROPERTY_KEYS.PUBLIC_DATA_KEY) || '';
 }
 
 /**
@@ -384,8 +399,8 @@ function sendSMS(to, text) {
       throw new Error('솔라피 API 키가 설정되지 않았습니다. Script Properties를 확인하세요.');
     }
     
-    if (!config.sender) {
-      throw new Error('솔라피 발신번호가 설정되지 않았습니다.');
+    if (!config.senderPhone) {
+      throw new Error('솔라피 발신번호(SOLAPI_SENDER_PHONE)가 설정되지 않았습니다.');
     }
     
     // 전화번호 정리
@@ -394,7 +409,7 @@ function sendSMS(to, text) {
     const payload = {
       message: {
         to: cleanTo,
-        from: config.sender,
+        from: config.senderPhone,
         text: text,
         type: 'SMS'
       }
@@ -449,14 +464,18 @@ function sendKakaoAlimtalk(to, templateId, variables = {}) {
       throw new Error('솔라피 API 키가 설정되지 않았습니다.');
     }
     
+    if (!config.pfId) {
+      throw new Error('카카오 채널 ID(SOLAPI_PF_ID)가 설정되지 않았습니다.');
+    }
+    
     const cleanTo = to.replace(/[^0-9]/g, '');
     
     const payload = {
       message: {
         to: cleanTo,
-        from: config.sender,
+        from: config.senderPhone,
         kakaoOptions: {
-          pfId: config.pfId || '',  // 카카오 채널 ID (필요시 추가)
+          pfId: config.pfId,  // 카카오 채널 ID
           templateId: templateId,
           variables: variables
         },
