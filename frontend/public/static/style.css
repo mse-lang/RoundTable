@@ -1,0 +1,243 @@
+/**
+ * VS AI ERP - Custom Styles
+ * 딜룸 프론트엔드 스타일
+ */
+
+/* ============================================================
+   기본 스타일
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ============================================================
+   유틸리티 클래스
+   ============================================================ */
+
+/* 텍스트 줄임 */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 글래스모피즘 효과 */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ============================================================
+   카드 스타일
+   ============================================================ */
+
+.deal-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.deal-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ============================================================
+   모달 애니메이션
+   ============================================================ */
+
+#nda-modal,
+#rt-apply-modal {
+  transition: opacity 0.2s ease;
+}
+
+#nda-modal > div,
+#rt-apply-modal > div {
+  animation: modal-in 0.3s ease-out;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ============================================================
+   캘린더 스타일
+   ============================================================ */
+
+#calendar-grid > div {
+  transition: background-color 0.15s ease;
+}
+
+#calendar-grid > div:hover {
+  background-color: #f3f4f6;
+}
+
+/* ============================================================
+   폼 스타일
+   ============================================================ */
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+/* 체크박스 스타일 */
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #1a73e8;
+  cursor: pointer;
+}
+
+/* ============================================================
+   버튼 스타일
+   ============================================================ */
+
+button,
+a.btn {
+  transition: all 0.2s ease;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Primary 버튼 호버 효과 */
+.bg-primary:hover {
+  filter: brightness(1.1);
+}
+
+/* ============================================================
+   상태 배지 스타일
+   ============================================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-signed {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.status-pending {
+  background-color: #fef9c3;
+  color: #a16207;
+}
+
+.status-expired {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ============================================================
+   스크롤바 스타일
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* ============================================================
+   반응형 스타일
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .deal-card:hover {
+    transform: none;
+  }
+  
+  #calendar-grid > div {
+    min-height: 80px;
+    padding: 0.5rem;
+  }
+}
+
+/* ============================================================
+   로딩 스피너 애니메이션
+   ============================================================ */
+
+.fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   페이드 인 애니메이션
+   ============================================================ */
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   슬라이드 업 애니메이션
+   ============================================================ */
+
+.slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
