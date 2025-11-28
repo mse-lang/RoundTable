@@ -301,6 +301,29 @@ function doPost(e) {
         break;
         
       // ========================================
+      // 통합 인증 (투자자/기업/중개인/운영진)
+      // ========================================
+      
+      case 'login':
+        // 통합 로그인
+        result = handleUnifiedLogin({
+          userId: postData.userId,
+          password: postData.password,
+          role: postData.role
+        });
+        break;
+        
+      case 'signup':
+        // 통합 회원가입 신청
+        result = handleUnifiedSignup(postData);
+        break;
+        
+      case 'verifySession':
+        // 세션 검증
+        result = verifyUserSession(postData.sessionToken, postData.role);
+        break;
+        
+      // ========================================
       // 기본
       // ========================================
       
@@ -975,6 +998,311 @@ function addViewCredits(data, sessionToken) {
     
   } catch (error) {
     return { success: false, message: error.message };
+  }
+}
+
+// ============================================================
+// 통합 인증 시스템 (투자자/기업/중개인/운영진)
+// ============================================================
+
+/**
+ * 역할별 시트 및 필드 매핑
+ */
+const ROLE_CONFIG = {
+  investor: {
+    sheet: 'TB_INVESTOR',
+    idField: 'USER_ID',
+    passwordField: 'PASSWORD',
+    nameField: 'NAME',
+    emailField: 'EMAIL',
+    statusField: 'STATUS',
+    label: '투자자'
+  },
+  company: {
+    sheet: 'TB_COMPANY',
+    idField: 'USER_ID',
+    passwordField: 'PASSWORD',
+    nameField: 'NAME',
+    emailField: 'EMAIL',
+    statusField: 'STATUS',
+    label: '기업'
+  },
+  broker: {
+    sheet: 'TB_BROKER',
+    idField: 'USER_ID',
+    passwordField: 'PASSWORD',
+    nameField: 'NAME',
+    emailField: 'EMAIL',
+    statusField: 'STATUS',
+    label: '중개인'
+  },
+  admin: {
+    sheet: null, // Script Properties 사용
+    label: '운영진'
+  }
+};
+
+/**
+ * 통합 로그인 처리
+ * @param {Object} params - { userId, password, role }
+ * @returns {Object}
+ */
+function handleUnifiedLogin(params) {
+  try {
+    const { userId, password, role } = params;
+    
+    if (!userId || !password || !role) {
+      return {
+        success: false,
+        data: null,
+        message: '아이디, 비밀번호, 회원 유형을 모두 입력해주세요.'
+      };
+    }
+    
+    // 역할 유효성 검사
+    if (!ROLE_CONFIG[role]) {
+      return {
+        success: false,
+        data: null,
+        message: '올바른 회원 유형을 선택해주세요.'
+      };
+    }
+    
+    // 운영진 로그인은 기존 함수 사용
+    if (role === 'admin') {
+      return handleAdminLogin({ adminId: userId, password: password });
+    }
+    
+    // 일반 회원 로그인
+    const config = ROLE_CONFIG[role];
+    
+    try {
+      const user = findOneRecord(config.sheet, { [config.idField]: userId });
+      
+      if (!user) {
+        Logger.log(`[Login] 사용자를 찾을 수 없음: ${userId} (${role})`);
+        return {
+          success: false,
+          data: null,
+          message: '아이디 또는 비밀번호가 올바르지 않습니다.'
+        };
+      }
+      
+      // 비밀번호 확인
+      if (user[config.passwordField] !== password) {
+        Logger.log(`[Login] 비밀번호 불일치: ${userId} (${role})`);
+        return {
+          success: false,
+          data: null,
+          message: '아이디 또는 비밀번호가 올바르지 않습니다.'
+        };
+      }
+      
+      // 상태 확인
+      if (user[config.statusField] === 'PENDING') {
+        return {
+          success: false,
+          data: null,
+          message: '계정 승인 대기 중입니다. 운영진 승인 후 로그인할 수 있습니다.'
+        };
+      }
+      
+      if (user[config.statusField] === 'SUSPENDED') {
+        return {
+          success: false,
+          data: null,
+          message: '계정이 정지되었습니다. 운영진에게 문의하세요.'
+        };
+      }
+      
+      // 세션 토큰 생성
+      const sessionToken = generateSessionToken();
+      
+      Logger.log(`[Login] 로그인 성공: ${userId} (${config.label})`);
+      sendToGoogleChat(`🔓 *${config.label} 로그인*\nID: ${userId}\n이름: ${user[config.nameField]}\n시간: ${formatDate(new Date())}`);
+      
+      return {
+        success: true,
+        data: {
+          sessionToken: sessionToken,
+          userId: userId,
+          role: role,
+          name: user[config.nameField],
+          email: user[config.emailField],
+          loginTime: formatDate(new Date()),
+          expiresIn: '8시간'
+        },
+        message: '로그인 성공'
+      };
+      
+    } catch (sheetError) {
+      // 시트가 없는 경우
+      Logger.log(`[Login] 시트 없음 또는 오류: ${config.sheet} - ${sheetError.message}`);
+      return {
+        success: false,
+        data: null,
+        message: '아이디 또는 비밀번호가 올바르지 않습니다.'
+      };
+    }
+    
+  } catch (error) {
+    Logger.log(`[Login] 오류: ${error.message}`);
+    return {
+      success: false,
+      data: null,
+      message: `로그인 처리 중 오류가 발생했습니다.`
+    };
+  }
+}
+
+/**
+ * 통합 회원가입 신청 처리
+ * @param {Object} data - 회원가입 데이터
+ * @returns {Object}
+ */
+function handleUnifiedSignup(data) {
+  try {
+    const { role, name, email, phone, company } = data;
+    
+    if (!role || !name || !email || !phone) {
+      return {
+        success: false,
+        data: null,
+        message: '필수 정보를 모두 입력해주세요.'
+      };
+    }
+    
+    // 역할 유효성 검사
+    if (!ROLE_CONFIG[role] || role === 'admin') {
+      return {
+        success: false,
+        data: null,
+        message: '올바른 회원 유형을 선택해주세요.'
+      };
+    }
+    
+    const config = ROLE_CONFIG[role];
+    
+    // 이메일 중복 확인
+    try {
+      const existingUser = findOneRecord(config.sheet, { [config.emailField]: email });
+      if (existingUser) {
+        return {
+          success: false,
+          data: null,
+          message: '이미 등록된 이메일입니다.'
+        };
+      }
+    } catch (e) {
+      // 시트가 없으면 무시 (새로 생성됨)
+    }
+    
+    // 회원 ID 생성
+    const prefixMap = {
+      investor: 'INV',
+      company: 'COM',
+      broker: 'BRK'
+    };
+    const memberId = generateId(prefixMap[role]);
+    
+    // 기본 회원 데이터
+    const memberData = {
+      [config.idField]: memberId,
+      [config.nameField]: name,
+      [config.emailField]: email,
+      PHONE: phone,
+      COMPANY: company || '',
+      POSITION: data.position || '',
+      STATUS: 'PENDING', // 승인 대기 상태
+      REG_DATE: formatDate(new Date())
+    };
+    
+    // 역할별 추가 데이터
+    if (role === 'investor') {
+      memberData.INVESTOR_TYPE = data.investorType || '';
+      memberData.INTERESTS = data.interests || '';
+      memberData.MONTHLY_CREDITS = 5;
+      memberData.REMAINING_CREDITS = 5;
+      memberData.REFERRER = data.referrer || '';
+    } else if (role === 'company') {
+      memberData.INDUSTRY = data.industry || '';
+      memberData.FOUNDED_YEAR = data.foundedYear || '';
+    } else if (role === 'broker') {
+      memberData.REFERRER = data.referrer || '';
+    }
+    
+    // 레코드 삽입
+    try {
+      insertRecord(config.sheet, memberData);
+    } catch (insertError) {
+      Logger.log(`[Signup] 레코드 삽입 실패: ${insertError.message}`);
+      return {
+        success: false,
+        data: null,
+        message: '회원가입 처리 중 오류가 발생했습니다. 운영진에게 문의하세요.'
+      };
+    }
+    
+    Logger.log(`[Signup] 회원가입 신청: ${memberId} (${config.label}) - ${name}`);
+    sendToGoogleChat(`📝 *${config.label} 회원가입 신청*\nID: ${memberId}\n이름: ${name}\n이메일: ${email}\n소속: ${company || '-'}\n시간: ${formatDate(new Date())}`);
+    
+    return {
+      success: true,
+      data: {
+        memberId: memberId,
+        role: role,
+        status: 'PENDING'
+      },
+      message: '회원가입 신청이 완료되었습니다. 운영진 검토 후 계정이 발급됩니다.'
+    };
+    
+  } catch (error) {
+    Logger.log(`[Signup] 오류: ${error.message}`);
+    return {
+      success: false,
+      data: null,
+      message: '회원가입 처리 중 오류가 발생했습니다.'
+    };
+  }
+}
+
+/**
+ * 사용자 세션 검증
+ * @param {string} sessionToken - 세션 토큰
+ * @param {string} role - 사용자 역할
+ * @returns {Object}
+ */
+function verifyUserSession(sessionToken, role) {
+  try {
+    if (!sessionToken) {
+      return {
+        success: false,
+        data: null,
+        message: '세션 토큰이 필요합니다.'
+      };
+    }
+    
+    if (isValidSessionToken(sessionToken)) {
+      return {
+        success: true,
+        data: { valid: true, role: role },
+        message: '유효한 세션입니다.'
+      };
+    } else {
+      return {
+        success: false,
+        data: { valid: false },
+        message: '세션이 만료되었습니다. 다시 로그인해주세요.'
+      };
+    }
+    
+  } catch (error) {
+    Logger.log(`[Session] 검증 오류: ${error.message}`);
+    return {
+      success: false,
+      data: null,
+      message: '세션 검증 중 오류가 발생했습니다.'
+    };
   }
 }
 
