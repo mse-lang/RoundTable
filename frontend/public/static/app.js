@@ -9,13 +9,8 @@
 
 /**
  * GAS API URL 설정
- * 
- * 배포 후 아래 방법 중 하나로 설정:
- * 1. 직접 입력: const API_BASE_URL = 'https://script.google.com/macros/s/AKfyc.../exec';
- * 2. 환경변수: HTML에서 <script>window.GAS_API_URL = '...';</script>
- * 3. 빈 값: 데모 모드 사용
  */
-const API_BASE_URL = window.GAS_API_URL || '';
+const API_BASE_URL = window.GAS_API_URL || 'https://script.google.com/macros/s/AKfycbzGCjvvVnwliXvEcvLwKsxFvYrQVuE6DfhcCFyPQ3zgOAA-DFA774xv5aFc3AuzBrly/exec';
 
 // API 호출 헬퍼
 async function apiCall(action, params = {}, method = 'GET') {
