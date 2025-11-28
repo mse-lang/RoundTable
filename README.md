@@ -1,187 +1,188 @@
-# VS AI ERP - 팩트시트 데이터룸
+# VentureSquare Round Table
 
-AI 기반 투자심사 분석과 NDA 보호 시스템을 통한 안전한 딜소싱 플랫폼
+스타트업 딜소싱 및 투자자 매칭 플랫폼
 
-## 프로젝트 개요
+## 📌 프로젝트 개요
 
-- **Name**: VS AI ERP 팩트시트 데이터룸
-- **Goal**: 스타트업 투자 자료를 AI로 분석하여 투자심사보고서를 자동 생성하고, NDA 기반 안전한 열람 환경 제공
-- **Features**: 
-  - AI 투자심사보고서 자동 생성 (Gemini 1.5 Pro)
-  - UcanSign 기반 휴대폰 본인인증 NDA 서명
-  - 서명 완료 시 Google Drive 폴더 자동 권한 부여
-  - O2O 라운드테이블 매칭 (투자자-창업자)
+- **서비스명**: VentureSquare Round Table
+- **목표**: 스타트업과 투자자를 연결하는 O2O 딜소싱 플랫폼
+- **주요 기능**: 딜룸, 라운드테이블, NDA 전자서명, 마이페이지
 
-## 기술 스택
+## 🔗 URLs
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | Hono + TypeScript + TailwindCSS |
-| **Backend** | Google Apps Script |
-| **Database** | Google Sheets (VS_Master_DB) |
-| **Auth/NDA** | UcanSign API (휴대폰 본인인증) |
-| **AI** | Gemini 1.5 Pro |
-| **Notification** | Solapi (SMS/Kakao), Google Chat Webhook |
-| **Deploy** | Cloudflare Pages |
+### 프론트엔드
+- **로컬 개발**: https://3000-ig1cko3y6z8mltleju0n6-b237eb32.sandbox.novita.ai
+- **프로덕션**: (Cloudflare 배포 후 업데이트)
 
-## 프로젝트 구조
+### 백엔드 (GAS)
+- **API URL**: (GAS 배포 후 업데이트)
+- **배포 가이드**: `/gas/DEPLOYMENT_GUIDE.md`
+
+## ✅ 완료된 기능
+
+### 프론트엔드
+- [x] 딜룸 메인 페이지 (`/`) - 딜 목록, 필터링
+- [x] 딜 상세 페이지 (`/deal/:id`) - 티저/풀리포트 구분
+- [x] 라운드테이블 페이지 (`/round-table`) - 캘린더, 일정 목록
+- [x] 마이페이지 (`/my-page`) - NDA/라운드테이블 신청 현황
+- [x] NDA 서명 요청 모달 (유캔사인 연동 준비)
+- [x] Dark Theme + Glassmorphism 디자인
+- [x] 반응형 레이아웃 (모바일/데스크톱)
+- [x] VentureSquare 공식 로고 적용
+
+### 백엔드 (GAS)
+- [x] API 라우터 (`Code.gs`) - doGet/doPost 핸들러
+- [x] 딜룸 모듈 (`DealRoom.gs`) - 딜 목록/상세 조회
+- [x] NDA 모듈 (`UcanSign.gs`) - 전자서명, 권한 관리
+- [x] 설정 모듈 (`Config.gs`) - DB 연결, 유틸리티
+- [x] AI 분석 모듈 (`GeminiAnalyzer.gs`) - Gemini 문서 분석
+- [x] 시트 생성 스크립트 (`create_sheets_template.gs`)
+
+## 📋 API 엔드포인트
+
+### GET 요청
+| Action | 설명 |
+|--------|------|
+| `health` | 서비스 상태 확인 |
+| `getActiveDeals` | 딜 목록 조회 |
+| `getDealDetail` | 딜 상세 조회 |
+| `getFilterOptions` | 필터 옵션 목록 |
+| `getRoundTable` | 라운드테이블 일정 |
+| `getUserStatus` | 마이페이지 데이터 |
+| `checkNDA` | NDA 상태 확인 |
+
+### POST 요청
+| Action | 설명 |
+|--------|------|
+| `requestNDA` | NDA 서명 요청 |
+| `applyRoundTable` | 라운드테이블 신청 |
+| `signingWebhook` | 유캔사인 콜백 |
+
+## 📁 프로젝트 구조
 
 ```
 webapp/
-├── frontend/                    # Hono 프론트엔드
+├── frontend/                  # Hono + TypeScript 프론트엔드
 │   ├── src/
-│   │   ├── index.tsx           # 메인 라우터 (/, /deal/:id, /round-table, /my-page)
-│   │   ├── renderer.tsx        # JSX 렌더러
-│   │   └── components/         # UI 컴포넌트
+│   │   ├── index.tsx          # 라우트 정의
+│   │   ├── renderer.tsx       # HTML 렌더러
+│   │   └── components/        # UI 컴포넌트
 │   │       ├── Header.tsx
 │   │       ├── Footer.tsx
 │   │       ├── DealCard.tsx
 │   │       └── NDAModal.tsx
-│   ├── public/static/
-│   │   ├── app.js              # 프론트엔드 로직
-│   │   └── style.css           # 커스텀 스타일
-│   └── ecosystem.config.cjs    # PM2 설정
+│   ├── public/static/         # 정적 파일
+│   │   ├── app.js             # 프론트엔드 로직
+│   │   ├── style.css          # 커스텀 CSS
+│   │   └── vs-logo.png        # 로고 이미지
+│   ├── wrangler.jsonc
+│   ├── package.json
+│   └── ecosystem.config.cjs   # PM2 설정
 │
-└── gas/                         # Google Apps Script 백엔드
-    ├── Code.gs                  # API 라우터 (doGet/doPost)
-    ├── Config.gs                # DB 연결 및 설정 헬퍼
-    ├── UcanSign.gs              # NDA 전자서명 처리
-    ├── DealRoom.gs              # 딜룸/라운드테이블 관리
-    ├── GeminiAnalyzer.gs        # AI 문서 분석
-    └── sheets-setup/            # DB 설정 가이드
+├── gas/                       # Google Apps Script 백엔드
+│   ├── Code.gs                # API 라우터
+│   ├── Config.gs              # 설정 및 유틸리티
+│   ├── DealRoom.gs            # 딜룸 로직
+│   ├── UcanSign.gs            # NDA 서명 관리
+│   ├── GeminiAnalyzer.gs      # AI 분석
+│   ├── appsscript.json        # GAS 설정
+│   ├── DEPLOYMENT_GUIDE.md    # 배포 가이드
+│   └── sheets-setup/          # DB 시트 생성 스크립트
+│
+└── README.md
 ```
 
-## 주요 페이지
+## 🗄️ 데이터 모델
 
-| 경로 | 설명 | 접근 |
-|------|------|------|
-| `/` | 딜룸 메인 (딜 목록) | Public |
-| `/deal/:id` | 딜 상세 (티저) | Public |
-| `/deal/:id` (Full) | 딜 상세 (전체) | NDA Signed |
-| `/round-table` | 라운드테이블 캘린더 | Public |
-| `/my-page` | 마이페이지 (NDA/참가 현황) | Logged In |
+### Google Sheets 구조
+| 시트명 | 설명 |
+|--------|------|
+| `TB_DEAL_ROOM` | 딜 정보 |
+| `TB_NDA_REQ` | NDA 요청 기록 |
+| `TB_ROUND_TABLE` | 라운드테이블 일정 |
+| `TB_RT_APPLICATION` | 라운드테이블 신청 |
+| `System_Config` | 시스템 설정값 |
 
-## API 엔드포인트 (GAS)
+### 외부 연동
+- **유캔사인**: 휴대폰 본인인증 기반 NDA 전자서명
+- **솔라피**: SMS/알림톡 발송 (선택)
+- **Google Drive**: 데이터룸 폴더 권한 관리
+- **Gemini AI**: 투자심사보고서 자동 생성
 
-### GET Actions
-| Action | Parameters | Description |
-|--------|------------|-------------|
-| `getActiveDeals` | - | 활성 딜 목록 조회 |
-| `getDealDetail` | `dealId`, `email` | 딜 상세 (NDA 검증) |
-| `getFilterOptions` | - | 필터 옵션 |
-| `getRoundTable` | `month`, `year` | 라운드테이블 일정 |
-| `getUserStatus` | `email` | 사용자 NDA/참가 현황 |
-| `checkNDA` | `dealId`, `email` | NDA 상태 확인 |
-| `health` | - | 서버 상태 체크 |
+## 🚀 배포 절차
 
-### POST Actions
-| Action | Parameters | Description |
-|--------|------------|-------------|
-| `requestNDA` | `dealId`, `name`, `email`, `phone` | NDA 서명 요청 |
-| `signingWebhook` | UcanSign payload | 서명 완료 웹훅 |
-| `applyRoundTable` | `rtId`, `name`, `email`, `purpose` | 라운드테이블 참가 신청 |
-| `analyzeDeal` | `dealId`, `folderId` | AI 문서 분석 |
+### 1. GAS 백엔드 배포
+상세 가이드: `/gas/DEPLOYMENT_GUIDE.md`
 
-## 데이터 모델
+1. Google Sheets 데이터베이스 생성
+2. GAS 프로젝트 생성 및 코드 배포
+3. Script Properties 설정
+4. Web App 배포
+5. API URL 복사
 
-### TB_DEAL_ROOM
-| Column | Description |
-|--------|-------------|
-| DEAL_ID | 딜 고유 ID |
-| Company_Name | 회사명 (비공개) |
-| Industry | 업종 |
-| Deal_Type | 투자유치/매각/M&A |
-| Summary | 티저 요약 |
-| Revenue_Range | 매출 구간 |
-| Target_Valuation | 희망 밸류에이션 |
-| Private_Folder_ID | 전체 자료 폴더 |
-| Public_Folder_ID | 티저 폴더 |
-| Stage | Active/Closed/Draft |
-
-### TB_NDA_REQ
-| Column | Description |
-|--------|-------------|
-| NDA_ID | NDA 요청 ID |
-| DEAL_ID | 대상 딜 |
-| User_Email | 사용자 이메일 |
-| User_Name | 사용자 이름 |
-| User_Phone | 사용자 전화번호 |
-| Status | Pending/Signed/Expired |
-| Signed_At | 서명 완료 시각 |
-| Expiry_Date | 만료일 |
-
-### TB_ROUND_TABLE
-| Column | Description |
-|--------|-------------|
-| RT_ID | 라운드테이블 ID |
-| Type | Public/Private |
-| Date_Time | 일시 |
-| Location | 장소 |
-| Max_Participants | 최대 인원 |
-| Available_Slots | 잔여 좌석 |
-
-## NDA 보안 플로우
-
-```
-[사용자] → [NDA 요청] → [UcanSign API 호출]
-                            ↓
-[사용자] ← [휴대폰 본인인증 SMS]
-                            ↓
-[서명 완료] → [Webhook 수신] → [Google Drive 권한 부여]
-                            ↓
-[사용자] → [상세 자료 열람 가능]
+### 2. 프론트엔드 API 연동
+```javascript
+// frontend/public/static/app.js
+const API_BASE_URL = 'https://script.google.com/macros/s/{your-deployment-id}/exec';
 ```
 
-## 개발 환경 실행
+### 3. Cloudflare Pages 배포
+```bash
+cd frontend
+npm run build
+npx wrangler pages deploy dist --project-name venturesquare-roundtable
+```
+
+## 📱 사용 가이드
+
+### 투자자
+1. **딜룸** 접속 → 관심 딜 탐색
+2. **티저 보기** → 공개 정보 확인
+3. **상세 열람** → NDA 서명 요청
+4. 카카오톡으로 본인인증 후 서명
+5. 데이터룸 접근 권한 획득
+
+### 스타트업
+1. **딜 등록** → 정보 입력
+2. AI가 투자심사보고서 자동 생성
+3. **라운드테이블** 참가 신청
+4. 투자자 미팅
+
+## 📊 기술 스택
+
+| 구분 | 기술 |
+|------|------|
+| **Frontend** | Hono, TypeScript, TailwindCSS, Lucide Icons |
+| **Backend** | Google Apps Script |
+| **Database** | Google Sheets |
+| **AI** | Gemini API |
+| **전자서명** | 유캔사인 |
+| **배포** | Cloudflare Pages |
+
+## ⏳ 미구현 기능
+
+- [ ] 딜 등록 폼 (`/register`)
+- [ ] Google OAuth 로그인
+- [ ] 이메일 알림 시스템
+- [ ] 관리자 대시보드
+- [ ] 실시간 알림 (WebSocket)
+
+## 🛠️ 개발 명령어
 
 ```bash
-# Frontend
+# 프론트엔드 개발
 cd frontend
-npm install
 npm run build
 pm2 start ecosystem.config.cjs
+pm2 logs vs-erp-frontend --nostream
 
-# 확인
+# 테스트
 curl http://localhost:3000
+curl http://localhost:3000/api/hello
 ```
 
-## 환경 변수 (GAS Script Properties)
+## 📞 문의
 
-| Key | Description |
-|-----|-------------|
-| `MASTER_DB_ID` | Google Sheets ID |
-| `GEMINI_API_KEY` | Gemini API Key |
-| `SOLAPI_API_KEY` | Solapi API Key |
-| `SOLAPI_API_SECRET` | Solapi API Secret |
-| `SOLAPI_SENDER_PHONE` | 발신 번호 |
-| `SOLAPI_SENDER_NAME` | 발신자명 |
-| `SOLAPI_PF_ID` | 카카오 채널 ID |
-| `PUBLIC_DATA_KEY` | 공공데이터 API Key |
-
-## 완료된 기능
-
-- [x] GAS 백엔드 모듈 (Code.gs, Config.gs, UcanSign.gs, DealRoom.gs)
-- [x] Gemini AI 문서 분석 모듈 (GeminiAnalyzer.gs)
-- [x] Solapi SMS/알림톡 연동
-- [x] Google Sheets DB 설정 자동화
-- [x] 프론트엔드 UI (딜룸, 딜 상세, 라운드테이블, 마이페이지)
-- [x] NDA 서명 모달
-
-## 다음 단계
-
-- [ ] GAS Web App 배포 및 프론트엔드 API 연동
-- [ ] Cloudflare Pages 배포
-- [ ] UcanSign 실제 연동 테스트
-- [ ] 딜 등록 페이지 구현
-
-## 배포 상태
-
-| Service | Status | URL |
-|---------|--------|-----|
-| Frontend (Dev) | Running | `https://3000-ig1cko3y6z8mltleju0n6-b237eb32.sandbox.novita.ai` |
-| GAS Backend | Pending | - |
-| Production | Pending | - |
-
----
-
-**Last Updated**: 2024-11-28
+- **운영**: VentureSquare
+- **이메일**: contact@venturesquare.net
+- **최종 업데이트**: 2024-11-28

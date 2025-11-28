@@ -1,5 +1,5 @@
 /**
- * VS AI ERP - Frontend Application
+ * VentureSquare Round Table - Frontend Application
  * Dark Theme + Glassmorphism Design
  */
 
@@ -7,8 +7,51 @@
 // 설정
 // ============================================================
 
-// GAS API URL (배포 후 실제 URL로 교체)
+/**
+ * GAS API URL 설정
+ * 
+ * 배포 후 아래 방법 중 하나로 설정:
+ * 1. 직접 입력: const API_BASE_URL = 'https://script.google.com/macros/s/AKfyc.../exec';
+ * 2. 환경변수: HTML에서 <script>window.GAS_API_URL = '...';</script>
+ * 3. 빈 값: 데모 모드 사용
+ */
 const API_BASE_URL = window.GAS_API_URL || '';
+
+// API 호출 헬퍼
+async function apiCall(action, params = {}, method = 'GET') {
+  // API URL이 없으면 데모 모드
+  if (!API_BASE_URL) {
+    console.log(`[Demo Mode] API 호출: ${action}`, params);
+    return null; // 데모 데이터 사용
+  }
+  
+  try {
+    let url = API_BASE_URL;
+    let options = {
+      method: method,
+      headers: { 'Content-Type': 'application/json' }
+    };
+    
+    if (method === 'GET') {
+      const queryParams = new URLSearchParams({ action, ...params });
+      url = `${API_BASE_URL}?${queryParams.toString()}`;
+    } else {
+      options.body = JSON.stringify({ action, ...params });
+    }
+    
+    const response = await fetch(url, options);
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'API 오류');
+    }
+    
+    return data.data;
+  } catch (error) {
+    console.error(`API 호출 실패 (${action}):`, error);
+    throw error;
+  }
+}
 
 // 상태 관리
 const state = {
@@ -80,8 +123,12 @@ async function initDealList() {
 
 async function loadFilterOptions() {
   try {
-    const industries = ['IT/소프트웨어', '바이오/헬스케어', '핀테크', '이커머스', '에듀테크'];
-    const revenues = ['Pre-Revenue', '1억 미만', '1억~5억', '5억~10억', '10억~50억', '50억~100억', '100억 이상'];
+    // API에서 필터 옵션 로드 시도
+    const apiData = await apiCall('getFilterOptions');
+    
+    // API 데이터가 있으면 사용, 없으면 기본값
+    const industries = apiData?.industries || ['IT/소프트웨어', '바이오/헬스케어', '핀테크', '이커머스', '에듀테크'];
+    const revenues = apiData?.revenueRanges || ['Pre-Revenue', '1억 미만', '1억~5억', '5억~10억', '10억~50억', '50억~100억', '100억 이상'];
     
     const industrySelect = document.getElementById('filter-industry');
     if (industrySelect) {
@@ -120,7 +167,24 @@ async function loadDeals() {
   `;
   
   try {
-    // 데모 데이터
+    // API에서 딜 목록 로드 시도
+    const apiData = await apiCall('getActiveDeals', {
+      industry: state.filters.industry,
+      dealType: state.filters.dealType,
+      revenueRange: state.filters.revenueRange,
+      page: state.pagination.page,
+      pageSize: state.pagination.pageSize
+    });
+    
+    // API 데이터가 있으면 사용
+    if (apiData?.deals) {
+      state.deals = apiData.deals;
+      state.pagination = apiData.pagination || state.pagination;
+      renderDeals(state.deals);
+      return;
+    }
+    
+    // API 없으면 데모 데이터 사용
     const demoDeals = [
       {
         DEAL_ID: 'DEAL_20241128_001',
@@ -173,9 +237,29 @@ async function loadDeals() {
     ];
     
     state.deals = demoDeals;
+    renderDeals(demoDeals);
     
-    // 필터 적용
-    let filteredDeals = demoDeals;
+  } catch (error) {
+    console.error('딜 목록 로드 실패:', error);
+    grid.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center py-20">
+        <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
+          <i data-lucide="alert-circle" class="w-8 h-8 text-red-400"></i>
+        </div>
+        <p class="text-gray-500">딜 정보를 불러오는데 실패했습니다.</p>
+      </div>
+    `;
+    lucide.createIcons();
+  }
+}
+
+// 딜 목록 렌더링 함수
+function renderDeals(deals) {
+  const grid = document.getElementById('deal-grid');
+  if (!grid) return;
+  
+  // 필터 적용 (데모 모드용)
+  let filteredDeals = deals;
     if (state.filters.industry) {
       filteredDeals = filteredDeals.filter(d => d.Industry === state.filters.industry);
     }
@@ -201,21 +285,8 @@ async function loadDeals() {
       return;
     }
     
-    grid.innerHTML = filteredDeals.map(deal => dealCardHTML(deal)).join('');
-    lucide.createIcons();
-    
-  } catch (error) {
-    console.error('딜 목록 로드 실패:', error);
-    grid.innerHTML = `
-      <div class="col-span-full flex flex-col items-center justify-center py-20">
-        <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
-          <i data-lucide="alert-circle" class="w-8 h-8 text-red-400"></i>
-        </div>
-        <p class="text-gray-500">딜 정보를 불러오는데 실패했습니다.</p>
-      </div>
-    `;
-    lucide.createIcons();
-  }
+  grid.innerHTML = filteredDeals.map(deal => dealCardHTML(deal)).join('');
+  lucide.createIcons();
 }
 
 // 딜 카드 HTML 생성 (Dark Theme)
@@ -476,8 +547,13 @@ document.addEventListener('DOMContentLoaded', () => {
       errorDiv.classList.add('hidden');
       
       try {
-        // API 호출 (데모에서는 시뮬레이션)
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // API 호출
+        const result = await apiCall('requestNDA', data, 'POST');
+        
+        if (result === null) {
+          // 데모 모드 - 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        }
         
         // 성공 시
         showToast('NDA 서명 요청이 발송되었습니다. 카카오톡을 확인해주세요.', 'success');
