@@ -21,8 +21,14 @@ function insertAllSampleData() {
   insertSampleRoundTables();
   
   Logger.log('=== 샘플 데이터 삽입 완료 ===');
+  Logger.log('딜: 10건, 라운드테이블: 5건');
   
-  SpreadsheetApp.getUi().alert('샘플 데이터 삽입이 완료되었습니다!\n\n딜: 10건\n라운드테이블: 5건');
+  // UI alert는 스프레드시트에서 실행할 때만 작동
+  try {
+    SpreadsheetApp.getUi().alert('샘플 데이터 삽입이 완료되었습니다!\n\n딜: 10건\n라운드테이블: 5건');
+  } catch (e) {
+    Logger.log('(UI 없이 실행됨 - alert 생략)');
+  }
 }
 
 /**
