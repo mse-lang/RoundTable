@@ -1721,4 +1721,381 @@ app.get('/my-page', (c) => {
   )
 })
 
+// ============================================================
+// 운영진 로그인
+// ============================================================
+app.get('/admin/login', (c) => {
+  return c.render(
+    <div class="min-h-screen flex flex-col bg-[#0a0a0a]">
+      <main class="flex-1 flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+          {/* Login Card */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+            {/* Header */}
+            <div class="text-center mb-8">
+              <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="shield" class="w-8 h-8 text-white"></i>
+              </div>
+              <h1 class="text-2xl font-bold text-white mb-2">운영진 로그인</h1>
+              <p class="text-gray-400 text-sm">VentureSquare Round Table 관리자</p>
+            </div>
+            
+            {/* Login Form */}
+            <form id="admin-login-form" class="space-y-4">
+              <div>
+                <label class="block text-sm text-gray-400 mb-2">관리자 아이디</label>
+                <div class="relative">
+                  <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                  <input type="text" name="adminId" required 
+                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-red-500 transition-colors"
+                    placeholder="admin" />
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm text-gray-400 mb-2">비밀번호</label>
+                <div class="relative">
+                  <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                  <input type="password" name="password" required 
+                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-red-500 transition-colors"
+                    placeholder="••••••••" />
+                </div>
+              </div>
+              
+              <button type="submit" 
+                class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                <i data-lucide="log-in" class="w-5 h-5"></i>
+                로그인
+              </button>
+            </form>
+            
+            {/* Security Notice */}
+            <div class="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
+              <div class="flex items-start gap-3">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5"></i>
+                <div class="text-xs text-yellow-200/80">
+                  <p class="font-semibold text-yellow-400 mb-1">보안 주의</p>
+                  <p>이 페이지는 운영진 전용입니다. 무단 접근 시도는 기록됩니다.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Back Link */}
+          <div class="mt-6 text-center">
+            <a href="/" class="text-gray-500 hover:text-white text-sm transition-colors">
+              ← 메인 페이지로 돌아가기
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>,
+    { title: '운영진 로그인 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
+// 운영진 대시보드
+// ============================================================
+app.get('/admin', (c) => {
+  return c.render(
+    <div class="min-h-screen bg-[#0a0a0a]">
+      {/* Admin Header */}
+      <header class="bg-gradient-to-r from-red-900/50 to-orange-900/50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center">
+                <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+              </div>
+              <div>
+                <div class="font-bold text-white">VS Round Table</div>
+                <div class="text-xs text-red-400">Admin Dashboard</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-gray-400 text-sm hidden sm:block">관리자</span>
+              <a href="/" class="text-gray-400 hover:text-white text-sm flex items-center gap-1">
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                사이트 보기
+              </a>
+              <a href="/admin/login" class="text-red-400 hover:text-red-300 text-sm flex items-center gap-1">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                로그아웃
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Overview */}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="briefcase" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">투자자 회원</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="stat-investors">-</div>
+            <div class="text-xs text-green-400 mt-1">승인 대기: <span id="stat-investors-pending">0</span>건</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="handshake" class="w-5 h-5 text-purple-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">중개인</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="stat-brokers">-</div>
+            <div class="text-xs text-yellow-400 mt-1">승인 대기: <span id="stat-brokers-pending">0</span>건</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="building-2" class="w-5 h-5 text-green-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">등록 딜</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="stat-deals">-</div>
+            <div class="text-xs text-blue-400 mt-1">Active: <span id="stat-deals-active">0</span>건</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="file-signature" class="w-5 h-5 text-orange-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">NDA 요청</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="stat-nda">-</div>
+            <div class="text-xs text-orange-400 mt-1">이번 달: <span id="stat-nda-month">0</span>건</div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-6 mb-8">
+          <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
+            빠른 작업
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="/admin/investors" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="user-plus" class="w-6 h-6 text-blue-400"></i>
+              <span class="text-sm text-gray-300">투자자 승인</span>
+            </a>
+            <a href="/admin/brokers" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="user-check" class="w-6 h-6 text-purple-400"></i>
+              <span class="text-sm text-gray-300">중개인 승인</span>
+            </a>
+            <a href="/admin/deals" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="folder-plus" class="w-6 h-6 text-green-400"></i>
+              <span class="text-sm text-gray-300">딜 관리</span>
+            </a>
+            <a href="/admin/credits" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="ticket" class="w-6 h-6 text-orange-400"></i>
+              <span class="text-sm text-gray-300">열람권 관리</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Pending Approvals */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="clock" class="w-5 h-5 text-yellow-400"></i>
+              승인 대기
+            </h2>
+            <div id="pending-list" class="space-y-3">
+              {/* Sample pending items */}
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="user" class="w-4 h-4 text-blue-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">투자자 가입 신청</div>
+                    <div class="text-gray-500 text-xs">홍길동 · OO벤처캐피탈</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="p-2 bg-green-500/20 hover:bg-green-500/30 rounded-lg transition-colors">
+                    <i data-lucide="check" class="w-4 h-4 text-green-400"></i>
+                  </button>
+                  <button class="p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-4 h-4 text-red-400"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="handshake" class="w-4 h-4 text-purple-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">중개인 등록 신청</div>
+                    <div class="text-gray-500 text-xs">김중개 · 위임계약서 첨부</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="p-2 bg-green-500/20 hover:bg-green-500/30 rounded-lg transition-colors">
+                    <i data-lucide="check" class="w-4 h-4 text-green-400"></i>
+                  </button>
+                  <button class="p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-4 h-4 text-red-400"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="text-center py-4 text-gray-500 text-sm">
+                승인 대기 중인 항목이 없습니다.
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="activity" class="w-5 h-5 text-green-400"></i>
+              최근 활동
+            </h2>
+            <div id="activity-list" class="space-y-3">
+              <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+                <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="file-signature" class="w-4 h-4 text-green-400"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-white text-sm">NDA 서명 완료</div>
+                  <div class="text-gray-500 text-xs">박투자 → DEAL_20241128_001</div>
+                  <div class="text-gray-600 text-xs mt-1">10분 전</div>
+                </div>
+              </div>
+              
+              <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+                <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="user-plus" class="w-4 h-4 text-blue-400"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-white text-sm">투자자 가입 승인</div>
+                  <div class="text-gray-500 text-xs">이투자 · ABC캐피탈</div>
+                  <div class="text-gray-600 text-xs mt-1">30분 전</div>
+                </div>
+              </div>
+              
+              <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+                <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="calendar-check" class="w-4 h-4 text-purple-400"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-white text-sm">라운드테이블 참가 신청</div>
+                  <div class="text-gray-500 text-xs">최투자 → RT_202412_001</div>
+                  <div class="text-gray-600 text-xs mt-1">1시간 전</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Management Sections */}
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Investor Management */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="users" class="w-5 h-5 text-blue-400"></i>
+                투자자 관리
+              </h2>
+              <a href="/admin/investors" class="text-blue-400 hover:text-blue-300 text-sm">전체보기 →</a>
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">전체 회원</span>
+                <span class="text-white font-semibold" id="inv-total">-</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">활성 회원</span>
+                <span class="text-green-400 font-semibold" id="inv-active">-</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">승인 대기</span>
+                <span class="text-yellow-400 font-semibold" id="inv-pending">-</span>
+              </div>
+            </div>
+            <button onclick="window.location.href='/admin/investors/new'" 
+              class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              계정 발급
+            </button>
+          </div>
+
+          {/* Deal Management */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="folder" class="w-5 h-5 text-green-400"></i>
+                딜 관리
+              </h2>
+              <a href="/admin/deals" class="text-green-400 hover:text-green-300 text-sm">전체보기 →</a>
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">전체 딜</span>
+                <span class="text-white font-semibold" id="deal-total">-</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">Active</span>
+                <span class="text-green-400 font-semibold" id="deal-active">-</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">검토중</span>
+                <span class="text-yellow-400 font-semibold" id="deal-review">-</span>
+              </div>
+            </div>
+            <button onclick="window.location.href='/admin/deals/new'" 
+              class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              딜 등록
+            </button>
+          </div>
+
+          {/* Credit Management */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="ticket" class="w-5 h-5 text-orange-400"></i>
+                열람권 관리
+              </h2>
+              <a href="/admin/credits" class="text-orange-400 hover:text-orange-300 text-sm">전체보기 →</a>
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">이번달 사용</span>
+                <span class="text-white font-semibold" id="credit-used">-</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">추가 요청</span>
+                <span class="text-yellow-400 font-semibold" id="credit-request">-</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                <span class="text-gray-400 text-sm">추천 보너스</span>
+                <span class="text-purple-400 font-semibold" id="credit-bonus">-</span>
+              </div>
+            </div>
+            <button onclick="window.location.href='/admin/credits/add'" 
+              class="w-full mt-4 bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              추가 열람권 부여
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    { title: '운영진 대시보드 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
 export default app
