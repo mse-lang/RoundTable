@@ -20,6 +20,7 @@ gas/
 ├── Config.gs         # 데이터베이스 연결 및 시스템 설정 헬퍼
 ├── UcanSign.gs       # NDA 전자서명 및 권한 관리
 ├── DealRoom.gs       # 딜룸 데이터 조회 및 라운드테이블 관리
+├── GeminiAnalyzer.gs # Gemini AI 문서 분석 및 리포트 생성
 └── README.md         # 프로젝트 문서
 ```
 
@@ -71,7 +72,35 @@ gas/
 | `applyForRoundTable(params)` | 라운드 테이블 참가 신청 |
 | `getUserDealStatus(userEmail)` | 사용자 딜 현황 조회 |
 
-### 4. Code.gs - API 라우터
+### 4. GeminiAnalyzer.gs - AI 문서 분석
+
+**주요 함수:**
+| 함수명 | 설명 |
+|--------|------|
+| `startDealAnalysis(dealId, folderId)` | 딜 분석 시작 (메인 함수) |
+| `collectDocumentsFromFolder(folderId)` | Drive 폴더에서 문서 수집 |
+| `extractTextFromFile(file)` | 파일에서 텍스트 추출 |
+| `callGeminiAPI(prompt, options)` | Gemini API 호출 |
+| `generateFullReport(documents)` | 투자심사보고서 생성 |
+| `generateTeaser(fullReport)` | 비실명 티저 생성 |
+| `extractQuickSummary(documents)` | 메타데이터 추출 |
+| `createReportPDF(folderId, fileName, content)` | PDF 보고서 생성 |
+
+**지원 파일 형식:**
+- PDF, Google Docs, Word
+- Google Sheets, Excel, CSV
+- Google Slides, PowerPoint
+- Plain Text
+
+**분석 워크플로우:**
+1. Drive 폴더에서 문서 자동 수집 (최신 버전 선별)
+2. 텍스트 추출 (OCR 지원)
+3. Gemini 1.5 Pro로 종합 분석
+4. 투자심사보고서(Full) PDF 생성
+5. 비실명 티저(Teaser) PDF 생성
+6. DB 업데이트 및 알림 발송
+
+### 5. Code.gs - API 라우터
 
 **GET 엔드포인트:**
 | Action | 설명 | 파라미터 |
@@ -90,6 +119,7 @@ gas/
 | `requestNDA` | NDA 서명 요청 | dealId*, email*, name*, phone* |
 | `applyRoundTable` | 라운드 테이블 신청 | rtId*, email*, name*, purpose, feeRate* |
 | `signingWebhook` | 유캔사인 Webhook | (유캔사인 시스템 자동 호출) |
+| `analyzeDeal` | AI 딜 분석 요청 | dealId*, folderId |
 
 ---
 

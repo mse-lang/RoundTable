@@ -231,6 +231,18 @@ function doPost(e) {
         break;
         
       // ========================================
+      // AI 분석 관련 액션
+      // ========================================
+      
+      case 'analyzeDeal':
+        // 딜 분석 요청 (Gemini)
+        result = handleAnalyzeRequest({
+          dealId: postData.dealId,
+          sourceFolderId: postData.folderId
+        });
+        break;
+        
+      // ========================================
       // 기본
       // ========================================
       
@@ -241,7 +253,8 @@ function doPost(e) {
           availableActions: [
             'requestNDA',
             'signingWebhook',
-            'applyRoundTable'
+            'applyRoundTable',
+            'analyzeDeal'
           ]
         };
     }
