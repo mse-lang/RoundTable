@@ -626,8 +626,8 @@ app.get('/register', (c) => {
                   <strong class="text-yellow-400">서비스 이용 동의</strong><br />
                   <span class="text-yellow-200/80">
                     본인은 딜 등록 신청에 따른 정보 제공에 동의하며, 
-                    벤처스퀘어의 <a href="#" class="underline">이용약관</a> 및 
-                    <a href="#" class="underline">개인정보처리방침</a>에 동의합니다.
+                    벤처스퀘어의 <a href="/terms" class="underline hover:text-yellow-300">이용약관</a> 및 
+                    <a href="/privacy" class="underline hover:text-yellow-300">개인정보처리방침</a>에 동의합니다.
                     제출된 정보는 투자 매칭 목적으로만 사용됩니다.
                   </span>
                 </span>
@@ -671,6 +671,353 @@ app.get('/register', (c) => {
       <Footer />
     </div>,
     { title: '딜 등록 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
+// 이용약관
+// ============================================================
+app.get('/terms', (c) => {
+  return c.render(
+    <div class="min-h-screen flex flex-col bg-[#0a0a0a]">
+      <Header />
+      
+      <main class="flex-1 py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div class="mb-8">
+            <h1 class="text-2xl lg:text-3xl font-bold text-white mb-2">이용약관</h1>
+            <p class="text-gray-400">VentureSquare Round Table 서비스 이용약관</p>
+          </div>
+
+          {/* Content */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 lg:p-8 space-y-8">
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-sm text-blue-400">1</span>
+                목적
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm">
+                본 약관은 (주)벤처스퀘어(이하 "회사")가 제공하는 VentureSquare Round Table 서비스(이하 "서비스")의 이용조건 및 절차, 
+                회사와 이용자의 권리, 의무 및 책임사항 등을 규정함을 목적으로 합니다.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-sm text-blue-400">2</span>
+                서비스의 내용
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm mb-3">
+                회사가 제공하는 서비스는 다음과 같습니다:
+              </p>
+              <ul class="list-disc list-inside text-gray-400 text-sm space-y-1 pl-2">
+                <li>스타트업 투자 딜 정보 열람 서비스</li>
+                <li>NDA(비밀유지계약) 기반 딜룸 접근 서비스</li>
+                <li>라운드테이블(오프라인 미팅) 참가 신청 서비스</li>
+                <li>AI 기반 투자심사보고서 제공 서비스</li>
+                <li>기타 회사가 추가 개발하거나 제휴를 통해 제공하는 서비스</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-sm text-blue-400">3</span>
+                이용자의 의무
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm mb-3">
+                이용자는 다음 행위를 하여서는 안 됩니다:
+              </p>
+              <ul class="list-disc list-inside text-gray-400 text-sm space-y-1 pl-2">
+                <li>서비스를 통해 취득한 딜 정보를 제3자에게 무단 제공, 누설하는 행위</li>
+                <li>NDA 서명 없이 딜 상세정보에 접근하거나 이를 시도하는 행위</li>
+                <li>허위 정보를 등록하거나 타인의 정보를 도용하는 행위</li>
+                <li>서비스의 안정적 운영을 방해하는 행위</li>
+                <li>기타 관련 법령에 위배되는 행위</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-sm text-blue-400">4</span>
+                비밀유지 의무
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm">
+                이용자는 서비스 이용 과정에서 취득한 모든 딜 관련 정보(기업명, 재무정보, 사업계획 등)에 대해 
+                비밀유지 의무를 가지며, 별도의 NDA 서명 시 해당 계약 조건을 준수하여야 합니다. 
+                비밀유지 의무 위반 시 민형사상 책임을 질 수 있습니다.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-sm text-blue-400">5</span>
+                수수료
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm">
+                라운드테이블을 통해 투자가 성사될 경우, 투자금의 일정 비율(3% 등)을 수수료로 지급하는 것에 동의합니다. 
+                수수료 비율은 참가 신청 시 명시되며, 신청 완료 시 이에 동의한 것으로 간주합니다.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-sm text-blue-400">6</span>
+                면책조항
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm">
+                회사는 서비스에 등록된 딜 정보의 정확성, 완전성을 보증하지 않으며, 
+                이용자의 투자 결정에 따른 손실에 대해 책임지지 않습니다. 
+                투자는 이용자 본인의 판단과 책임하에 이루어져야 합니다.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center text-sm text-blue-400">7</span>
+                분쟁해결
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm">
+                서비스 이용과 관련하여 발생한 분쟁에 대해 회사와 이용자는 성실히 협의하여 해결합니다. 
+                협의가 이루어지지 않을 경우, 관할 법원은 회사 소재지 관할 법원으로 합니다.
+              </p>
+            </section>
+
+            <section class="bg-white/5 rounded-xl p-4 border border-white/10">
+              <h2 class="text-base font-bold text-white mb-2">부칙</h2>
+              <p class="text-gray-500 text-sm">
+                본 약관은 2024년 1월 1일부터 시행합니다.<br/>
+                최종 개정일: 2024년 11월 28일
+              </p>
+            </section>
+          </div>
+
+          {/* Back Button */}
+          <div class="mt-8 text-center">
+            <a href="/" class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              홈으로 돌아가기
+            </a>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>,
+    { title: '이용약관 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
+// 개인정보처리방침
+// ============================================================
+app.get('/privacy', (c) => {
+  return c.render(
+    <div class="min-h-screen flex flex-col bg-[#0a0a0a]">
+      <Header />
+      
+      <main class="flex-1 py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div class="mb-8">
+            <h1 class="text-2xl lg:text-3xl font-bold text-white mb-2">개인정보처리방침</h1>
+            <p class="text-gray-400">(주)벤처스퀘어 개인정보처리방침</p>
+          </div>
+
+          {/* Content */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 lg:p-8 space-y-8">
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">1</span>
+                개인정보 수집 항목
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm mb-3">
+                회사는 서비스 제공을 위해 다음과 같은 개인정보를 수집합니다:
+              </p>
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <ul class="text-gray-400 text-sm space-y-2">
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span><strong class="text-white">필수 정보:</strong> 이름, 이메일 주소, 휴대폰 번호</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span><strong class="text-white">딜 등록 시:</strong> 회사명, 대표자명, 사업자등록번호, 사업 정보</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span><strong class="text-white">자동 수집:</strong> IP 주소, 쿠키, 방문 일시, 서비스 이용 기록</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">2</span>
+                개인정보 수집 및 이용목적
+              </h2>
+              <ul class="list-disc list-inside text-gray-400 text-sm space-y-1 pl-2">
+                <li>서비스 제공 및 운영 (딜 정보 열람, NDA 체결, 라운드테이블 참가)</li>
+                <li>회원 관리 및 본인 확인</li>
+                <li>투자자-스타트업 매칭 서비스 제공</li>
+                <li>서비스 관련 공지 및 고객 문의 응대</li>
+                <li>서비스 개선 및 맞춤 서비스 제공</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">3</span>
+                개인정보 보유 및 이용기간
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm mb-3">
+                회사는 개인정보 수집 및 이용목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. 
+                단, 관계 법령에 따라 보존해야 하는 경우 해당 기간 동안 보관합니다:
+              </p>
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <ul class="text-gray-400 text-sm space-y-2">
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>계약 또는 청약철회 등에 관한 기록: <strong class="text-white">5년</strong> (전자상거래법)</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>대금결제 및 재화 등의 공급에 관한 기록: <strong class="text-white">5년</strong> (전자상거래법)</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>소비자 불만 또는 분쟁처리에 관한 기록: <strong class="text-white">3년</strong> (전자상거래법)</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>웹사이트 방문 기록: <strong class="text-white">3개월</strong> (통신비밀보호법)</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">4</span>
+                개인정보의 제3자 제공
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm">
+                회사는 이용자의 개인정보를 원칙적으로 외부에 제공하지 않습니다. 
+                다만, 다음의 경우에는 예외로 합니다:
+              </p>
+              <ul class="list-disc list-inside text-gray-400 text-sm space-y-1 pl-2 mt-3">
+                <li>이용자가 사전에 동의한 경우</li>
+                <li>NDA 체결 시 해당 딜 담당자에게 연락처 제공 (별도 동의)</li>
+                <li>법령의 규정에 의하거나, 수사 목적으로 법령에 정해진 절차에 따른 요청이 있는 경우</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">5</span>
+                개인정보 보호를 위한 기술적/관리적 대책
+              </h2>
+              <ul class="list-disc list-inside text-gray-400 text-sm space-y-1 pl-2">
+                <li>개인정보 암호화: 비밀번호는 암호화되어 저장 및 관리</li>
+                <li>해킹 등에 대비한 기술적 대책: SSL/TLS 암호화 통신</li>
+                <li>개인정보 취급 직원의 최소화 및 교육</li>
+                <li>개인정보보호 내부관리계획 수립 및 시행</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">6</span>
+                이용자의 권리와 행사 방법
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm">
+                이용자는 언제든지 등록되어 있는 자신의 개인정보를 조회, 수정, 삭제할 수 있으며, 
+                개인정보 처리에 대한 동의 철회를 요청할 수 있습니다. 
+                관련 문의는 개인정보보호 담당자에게 서면, 전화 또는 이메일로 연락하시면 
+                지체 없이 조치하겠습니다.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">7</span>
+                개인정보 보호책임자
+              </h2>
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <ul class="text-gray-400 text-sm space-y-2">
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span><strong class="text-white">성명:</strong> 명승은</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span><strong class="text-white">직책:</strong> 대표이사</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span><strong class="text-white">이메일:</strong> roundtable@venturesquare.net</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span><strong class="text-white">전화번호:</strong> 02-1877-6503</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h2 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span class="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm text-purple-400">8</span>
+                고충처리 기관
+              </h2>
+              <p class="text-gray-400 leading-relaxed text-sm mb-3">
+                개인정보 침해에 대한 신고나 상담이 필요한 경우, 아래 기관에 문의하실 수 있습니다:
+              </p>
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <ul class="text-gray-400 text-sm space-y-2">
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>개인정보침해신고센터: (국번없이) 118 / privacy.kisa.or.kr</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>개인정보분쟁조정위원회: 1833-6972 / kopico.go.kr</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>대검찰청 사이버수사과: (국번없이) 1301 / spo.go.kr</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-purple-400">•</span>
+                    <span>경찰청 사이버안전국: (국번없이) 182 / cyberbureau.police.go.kr</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="bg-white/5 rounded-xl p-4 border border-white/10">
+              <h2 class="text-base font-bold text-white mb-2">부칙</h2>
+              <p class="text-gray-500 text-sm">
+                본 개인정보처리방침은 2024년 1월 1일부터 적용됩니다.<br/>
+                최종 개정일: 2024년 11월 28일
+              </p>
+            </section>
+          </div>
+
+          {/* Back Button */}
+          <div class="mt-8 text-center">
+            <a href="/" class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              홈으로 돌아가기
+            </a>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>,
+    { title: '개인정보처리방침 | 벤쳐스퀘어 라운드테이블' }
   )
 })
 

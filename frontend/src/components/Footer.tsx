@@ -74,26 +74,34 @@ export const Footer = () => {
             <ul class="space-y-3 text-sm text-gray-400">
               <li class="flex items-center gap-2">
                 <i data-lucide="mail" class="w-4 h-4"></i>
-                contact@venturesquare.net
+                roundtable@venturesquare.net
               </li>
               <li class="flex items-center gap-2">
                 <i data-lucide="phone" class="w-4 h-4"></i>
-                02-1234-5678
+                02-1877-6503
               </li>
               <li class="flex items-center gap-2">
                 <i data-lucide="map-pin" class="w-4 h-4"></i>
-                서울시 강남구 테헤란로
+                서울시 강남구 영동대로 646, 1604호
               </li>
             </ul>
           </div>
         </div>
 
+        {/* Company Info */}
+        <div class="border-t border-white/10 mt-8 pt-6">
+          <div class="text-xs text-gray-600 space-y-1">
+            <p>(주)벤처스퀘어 | 대표: 명승은 | 사업자등록번호: 211-88-48126</p>
+            <p>서울시 강남구 영동대로 646, 1604호</p>
+          </div>
+        </div>
+
         {/* Bottom */}
-        <div class="border-t border-white/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <div class="border-t border-white/10 mt-6 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
           <p>© {currentYear} VentureSquare. All rights reserved.</p>
           <div class="flex gap-6">
-            <a href="#" class="hover:text-white transition-colors">이용약관</a>
-            <a href="#" class="hover:text-white transition-colors">개인정보처리방침</a>
+            <a href="/terms" class="hover:text-white transition-colors">이용약관</a>
+            <a href="/privacy" class="hover:text-white transition-colors">개인정보처리방침</a>
           </div>
         </div>
       </div>
