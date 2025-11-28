@@ -1022,6 +1022,525 @@ app.get('/privacy', (c) => {
 })
 
 // ============================================================
+// 투자자 회원가입 프로세스 안내
+// ============================================================
+app.get('/investor/register', (c) => {
+  return c.render(
+    <div class="min-h-screen flex flex-col bg-[#0a0a0a]">
+      <Header />
+      
+      <main class="flex-1 py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div class="mb-8 text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="briefcase" class="w-8 h-8 text-white"></i>
+            </div>
+            <h1 class="text-2xl lg:text-3xl font-bold text-white mb-2">투자자 회원 가입</h1>
+            <p class="text-gray-400">VentureSquare Round Table 투자자 회원 가입 프로세스</p>
+          </div>
+
+          {/* Notice Box */}
+          <div class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6 mb-8">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="info" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-blue-400 mb-2">가입 안내</h3>
+                <p class="text-blue-200/80 text-sm leading-relaxed">
+                  투자자 회원은 <strong class="text-white">운영진이 발급한 아이디와 비밀번호</strong>로만 접속할 수 있습니다.
+                  가입을 원하시면 아래 양식을 작성해 주시면, 운영진 검토 후 계정을 발급해 드립니다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Process Steps */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-8">
+            <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <i data-lucide="list-checks" class="w-5 h-5 text-green-400"></i>
+              가입 프로세스
+            </h2>
+            
+            <div class="space-y-6">
+              {/* Step 1 */}
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                  <div class="w-0.5 h-full bg-white/10 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <h3 class="text-white font-semibold mb-1">가입 신청서 제출</h3>
+                  <p class="text-gray-400 text-sm">아래 양식을 작성하여 가입 신청</p>
+                </div>
+              </div>
+              
+              {/* Step 2 */}
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                  <div class="w-0.5 h-full bg-white/10 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <h3 class="text-white font-semibold mb-1">운영진 검토</h3>
+                  <p class="text-gray-400 text-sm">영업일 기준 1-2일 내 검토</p>
+                </div>
+              </div>
+              
+              {/* Step 3 */}
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                  <div class="w-0.5 h-full bg-white/10 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <h3 class="text-white font-semibold mb-1">본인인증</h3>
+                  <p class="text-gray-400 text-sm">휴대폰 본인인증 진행 (필수)</p>
+                </div>
+              </div>
+              
+              {/* Step 4 */}
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-white font-semibold mb-1">계정 발급</h3>
+                  <p class="text-gray-400 text-sm">이메일로 아이디/비밀번호 전달</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Benefits */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-8">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="gift" class="w-5 h-5 text-yellow-400"></i>
+              회원 혜택
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="eye" class="w-4 h-4 text-blue-400"></i>
+                  </div>
+                  <span class="text-white font-medium">월 5건 무료 열람</span>
+                </div>
+                <p class="text-gray-500 text-sm">매월 5건의 딜 자료를 무료로 열람할 수 있습니다.</p>
+              </div>
+              
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="users" class="w-4 h-4 text-purple-400"></i>
+                  </div>
+                  <span class="text-white font-medium">추천 보너스</span>
+                </div>
+                <p class="text-gray-500 text-sm">다른 투자자를 추천하면 추가 2건 열람권 제공</p>
+              </div>
+              
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="calendar-check" class="w-4 h-4 text-green-400"></i>
+                  </div>
+                  <span class="text-white font-medium">라운드테이블 참가</span>
+                </div>
+                <p class="text-gray-500 text-sm">오프라인 투자 미팅 우선 참가 기회</p>
+              </div>
+              
+              <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-orange-400"></i>
+                  </div>
+                  <span class="text-white font-medium">NDA 보호</span>
+                </div>
+                <p class="text-gray-500 text-sm">전자서명 기반 안전한 NDA 체결</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Registration Form */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-8">
+            <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <i data-lucide="user-plus" class="w-5 h-5 text-blue-400"></i>
+              가입 신청서
+            </h2>
+            
+            <form id="investor-register-form" class="space-y-6">
+              {/* Personal Info */}
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-2">성명 <span class="text-red-400">*</span></label>
+                  <input type="text" name="name" required 
+                    class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="홍길동" />
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-2">이메일 <span class="text-red-400">*</span></label>
+                  <input type="email" name="email" required 
+                    class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="investor@company.com" />
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-2">휴대폰 번호 <span class="text-red-400">*</span></label>
+                  <input type="tel" name="phone" required 
+                    class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="010-1234-5678" />
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-2">소속 기관/회사 <span class="text-red-400">*</span></label>
+                  <input type="text" name="company" required 
+                    class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="OO벤처캐피탈" />
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm text-gray-400 mb-2">직책 <span class="text-red-400">*</span></label>
+                  <input type="text" name="position" required 
+                    class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="심사역 / 파트너" />
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-400 mb-2">투자자 유형 <span class="text-red-400">*</span></label>
+                  <select name="investorType" required 
+                    class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-blue-500 transition-colors">
+                    <option value="">선택하세요</option>
+                    <option value="VC">벤처캐피탈 (VC)</option>
+                    <option value="CVC">기업형벤처캐피탈 (CVC)</option>
+                    <option value="AC">액셀러레이터 (AC)</option>
+                    <option value="Angel">엔젤투자자</option>
+                    <option value="PE">사모펀드 (PE)</option>
+                    <option value="Family">패밀리오피스</option>
+                    <option value="Strategic">전략적 투자자</option>
+                    <option value="Other">기타</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm text-gray-400 mb-2">관심 투자 분야</label>
+                <input type="text" name="interests" 
+                  class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                  placeholder="예: AI/SaaS, 바이오, 핀테크" />
+              </div>
+              
+              <div>
+                <label class="block text-sm text-gray-400 mb-2">추천인 (선택)</label>
+                <input type="text" name="referrer" 
+                  class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                  placeholder="추천해주신 분의 성함 또는 이메일" />
+                <p class="text-xs text-gray-600 mt-1">추천인이 있으면 양측 모두 추가 열람권 2건이 제공됩니다.</p>
+              </div>
+              
+              {/* Agreements */}
+              <div class="space-y-3">
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="agreeTerms" required class="mt-1 w-5 h-5 flex-shrink-0" />
+                  <span class="text-sm text-gray-400">
+                    <a href="/terms" class="text-blue-400 underline">이용약관</a> 및 
+                    <a href="/privacy" class="text-blue-400 underline">개인정보처리방침</a>에 동의합니다. <span class="text-red-400">*</span>
+                  </span>
+                </label>
+                
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="agreeNDA" required class="mt-1 w-5 h-5 flex-shrink-0" />
+                  <span class="text-sm text-gray-400">
+                    딜 정보 열람 시 <strong class="text-white">NDA(비밀유지계약)</strong> 체결에 동의합니다. <span class="text-red-400">*</span>
+                  </span>
+                </label>
+                
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="agreeIdentity" required class="mt-1 w-5 h-5 flex-shrink-0" />
+                  <span class="text-sm text-gray-400">
+                    <strong class="text-white">본인인증</strong> 절차 진행에 동의합니다. <span class="text-red-400">*</span>
+                  </span>
+                </label>
+              </div>
+              
+              {/* Submit */}
+              <button type="submit" 
+                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                가입 신청
+              </button>
+            </form>
+          </div>
+
+          {/* Already Member */}
+          <div class="text-center">
+            <p class="text-gray-500 mb-2">이미 계정이 있으신가요?</p>
+            <a href="/investor/login" class="text-blue-400 hover:text-blue-300 font-medium">
+              로그인하기 →
+            </a>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>,
+    { title: '투자자 회원가입 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
+// 투자자 로그인
+// ============================================================
+app.get('/investor/login', (c) => {
+  return c.render(
+    <div class="min-h-screen flex flex-col bg-[#0a0a0a]">
+      <Header />
+      
+      <main class="flex-1 py-8 flex items-center justify-center">
+        <div class="w-full max-w-md px-4">
+          {/* Login Card */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+            {/* Header */}
+            <div class="text-center mb-8">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="briefcase" class="w-8 h-8 text-white"></i>
+              </div>
+              <h1 class="text-2xl font-bold text-white mb-2">투자자 로그인</h1>
+              <p class="text-gray-400 text-sm">운영진이 발급한 계정으로 로그인하세요</p>
+            </div>
+            
+            {/* Login Form */}
+            <form id="investor-login-form" class="space-y-4">
+              <div>
+                <label class="block text-sm text-gray-400 mb-2">아이디</label>
+                <div class="relative">
+                  <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                  <input type="text" name="userId" required 
+                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="발급받은 아이디" />
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-sm text-gray-400 mb-2">비밀번호</label>
+                <div class="relative">
+                  <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                  <input type="password" name="password" required 
+                    class="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="비밀번호" />
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between text-sm">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" name="remember" class="w-4 h-4" />
+                  <span class="text-gray-400">로그인 유지</span>
+                </label>
+                <a href="#" class="text-blue-400 hover:text-blue-300">비밀번호 찾기</a>
+              </div>
+              
+              <button type="submit" 
+                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                <i data-lucide="log-in" class="w-5 h-5"></i>
+                로그인
+              </button>
+            </form>
+            
+            {/* Divider */}
+            <div class="flex items-center gap-4 my-6">
+              <div class="flex-1 h-px bg-white/10"></div>
+              <span class="text-gray-500 text-sm">또는</span>
+              <div class="flex-1 h-px bg-white/10"></div>
+            </div>
+            
+            {/* Register Link */}
+            <div class="text-center">
+              <p class="text-gray-500 text-sm mb-2">아직 계정이 없으신가요?</p>
+              <a href="/investor/register" 
+                class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                회원가입 신청
+              </a>
+            </div>
+          </div>
+          
+          {/* Help */}
+          <div class="mt-6 text-center">
+            <p class="text-gray-600 text-sm">
+              로그인에 문제가 있으신가요?<br/>
+              <a href="mailto:roundtable@venturesquare.net" class="text-blue-400 hover:text-blue-300">
+                roundtable@venturesquare.net
+              </a>
+            </p>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>,
+    { title: '투자자 로그인 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
+// 중개인 회원 안내
+// ============================================================
+app.get('/broker/info', (c) => {
+  return c.render(
+    <div class="min-h-screen flex flex-col bg-[#0a0a0a]">
+      <Header />
+      
+      <main class="flex-1 py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div class="mb-8 text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="handshake" class="w-8 h-8 text-white"></i>
+            </div>
+            <h1 class="text-2xl lg:text-3xl font-bold text-white mb-2">중개인 회원 안내</h1>
+            <p class="text-gray-400">VentureSquare Round Table 중개인 회원 프로세스</p>
+          </div>
+
+          {/* Role Description */}
+          <div class="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-purple-400 mb-3 flex items-center gap-2">
+              <i data-lucide="info" class="w-5 h-5"></i>
+              중개인의 역할
+            </h3>
+            <p class="text-purple-200/80 text-sm leading-relaxed mb-4">
+              중개인 회원은 <strong class="text-white">기업 회원</strong> 또는 <strong class="text-white">투자자 회원</strong>으로부터 
+              위임을 받아 투자 중개 활동을 수행합니다. 다수의 기업 및 투자자와 계약할 수 있으며, 
+              각 건별로 별도의 NDA를 체결해야 합니다.
+            </p>
+            <ul class="text-purple-200/80 text-sm space-y-2">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-purple-400 mt-0.5"></i>
+                기업을 대신하여 투자자에게 딜 소개
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-purple-400 mt-0.5"></i>
+                투자자를 대신하여 딜 검토 및 연락
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-purple-400 mt-0.5"></i>
+                투자 성사 시 중개 수수료 수취
+              </li>
+            </ul>
+          </div>
+
+          {/* Process */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-8">
+            <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <i data-lucide="list-checks" class="w-5 h-5 text-green-400"></i>
+              중개인 등록 프로세스
+            </h2>
+            
+            <div class="space-y-6">
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                  <div class="w-0.5 h-full bg-white/10 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <h3 class="text-white font-semibold mb-1">추천 및 지정</h3>
+                  <p class="text-gray-400 text-sm">운영진, 투자자 회원, 또는 기업 회원의 추천이 필요합니다.</p>
+                </div>
+              </div>
+              
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                  <div class="w-0.5 h-full bg-white/10 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <h3 class="text-white font-semibold mb-1">위임 계약 체결</h3>
+                  <p class="text-gray-400 text-sm">기업 또는 투자자와 전자서명 기반 위임 계약을 체결합니다.</p>
+                </div>
+              </div>
+              
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                  <div class="w-0.5 h-full bg-white/10 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <h3 class="text-white font-semibold mb-1">운영진 승인</h3>
+                  <p class="text-gray-400 text-sm">위임 계약서를 첨부하여 운영진 승인을 받습니다.</p>
+                </div>
+              </div>
+              
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                  <div class="w-0.5 h-full bg-white/10 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-6">
+                  <h3 class="text-white font-semibold mb-1">본인인증</h3>
+                  <p class="text-gray-400 text-sm">휴대폰 본인인증을 완료합니다.</p>
+                </div>
+              </div>
+              
+              <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                  <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">5</div>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-white font-semibold mb-1">활동 시작</h3>
+                  <p class="text-gray-400 text-sm">계정 발급 후 중개 활동을 시작합니다.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* NDA Notice */}
+          <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+              NDA 체결 안내
+            </h3>
+            <div class="text-yellow-200/80 text-sm space-y-3">
+              <p>
+                중개인은 다수의 기업/투자자와 계약할 수 있지만, <strong class="text-white">각 건별로 별도의 NDA</strong>를 체결해야 합니다.
+              </p>
+              <ul class="space-y-1 pl-4">
+                <li class="flex items-start gap-2">
+                  <span class="text-yellow-400">•</span>
+                  기업 A와 체결한 NDA는 기업 B의 정보에 적용되지 않습니다.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-yellow-400">•</span>
+                  투자자 X와 체결한 NDA는 투자자 Y의 활동에 적용되지 않습니다.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-yellow-400">•</span>
+                  모든 NDA는 개별적으로 관리되며, 위반 시 해당 건에 대한 책임을 집니다.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 text-center">
+            <h3 class="text-white font-semibold mb-2">중개인 등록 문의</h3>
+            <p class="text-gray-400 text-sm mb-4">
+              중개인 등록을 원하시면 운영진에게 연락해 주세요.
+            </p>
+            <a href="mailto:roundtable@venturesquare.net" 
+              class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+              <i data-lucide="mail" class="w-5 h-5"></i>
+              문의하기
+            </a>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>,
+    { title: '중개인 회원 안내 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
 // 마이페이지
 // ============================================================
 app.get('/my-page', (c) => {

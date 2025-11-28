@@ -20,7 +20,9 @@ VS AI ERP 팩트시트 데이터룸의 데이터베이스로 사용될 Google Sh
 
 ## 2단계: 시트 생성
 
-아래 5개의 시트를 생성하세요:
+아래 시트들을 생성하세요:
+
+### 📁 핵심 시트
 
 | 시트명 | 용도 |
 |--------|------|
@@ -29,6 +31,17 @@ VS AI ERP 팩트시트 데이터룸의 데이터베이스로 사용될 Google Sh
 | `TB_ROUND_TABLE` | 라운드 테이블 일정 |
 | `TB_RT_APPLICATION` | 참가 신청 및 수수료 확약 |
 | `System_Config` | 시스템 설정 (API 키 등) |
+
+### 📁 회원 관리 시트 (신규)
+
+| 시트명 | 용도 |
+|--------|------|
+| `TB_INVESTOR` | 투자자 회원 관리 |
+| `TB_BROKER` | 중개인 회원 관리 |
+| `TB_COMPANY` | 기업 회원 관리 |
+| `TB_DELEGATION` | 위임 계약 관리 (중개인-기업/투자자) |
+| `TB_VIEW_CREDIT` | 열람권 관리 (월 5건, 추천 보너스 등) |
+| `TB_REFERRAL` | 추천인 관리 |
 
 ---
 
@@ -63,6 +76,140 @@ VS AI ERP 팩트시트 데이터룸의 데이터베이스로 사용될 Google Sh
 | A | B | C |
 |---|---|---|
 | KEY | VALUE | Description |
+
+---
+
+## 3-2단계: 회원 관리 시트 헤더 설정
+
+### 📊 TB_INVESTOR (투자자 회원)
+
+| 컬럼 | 설명 |
+|------|------|
+| INVESTOR_ID | 투자자 고유 ID (INV_YYYYMMDD_NNN) |
+| User_ID | 로그인 아이디 (운영진 발급) |
+| Password_Hash | 비밀번호 해시 |
+| Name | 실명 |
+| Email | 이메일 |
+| Phone | 전화번호 |
+| Company | 소속 회사/기관 |
+| Position | 직책 |
+| Identity_Verified | 본인인증 완료 여부 (Y/N) |
+| Identity_Verified_At | 본인인증 일시 |
+| Referrer_ID | 추천인 ID (있는 경우) |
+| Status | 상태 (Pending/Active/Suspended) |
+| Created_At | 가입일 |
+| Last_Login | 최근 로그인 |
+
+**헤더 행:**
+```
+INVESTOR_ID | User_ID | Password_Hash | Name | Email | Phone | Company | Position | Identity_Verified | Identity_Verified_At | Referrer_ID | Status | Created_At | Last_Login
+```
+
+### 📊 TB_BROKER (중개인 회원)
+
+| 컬럼 | 설명 |
+|------|------|
+| BROKER_ID | 중개인 고유 ID (BRK_YYYYMMDD_NNN) |
+| User_ID | 로그인 아이디 |
+| Password_Hash | 비밀번호 해시 |
+| Name | 실명 |
+| Email | 이메일 |
+| Phone | 전화번호 |
+| Company | 소속 회사 |
+| License_No | 자격증/사업자번호 |
+| Recommender_Type | 추천인 유형 (Admin/Investor/Company) |
+| Recommender_ID | 추천인 ID |
+| Identity_Verified | 본인인증 완료 (Y/N) |
+| Admin_Approved | 운영진 승인 (Y/N) |
+| Admin_Approved_At | 승인 일시 |
+| Status | 상태 (Pending/Active/Suspended) |
+| Created_At | 가입일 |
+
+**헤더 행:**
+```
+BROKER_ID | User_ID | Password_Hash | Name | Email | Phone | Company | License_No | Recommender_Type | Recommender_ID | Identity_Verified | Admin_Approved | Admin_Approved_At | Status | Created_At
+```
+
+### 📊 TB_COMPANY (기업 회원)
+
+| 컬럼 | 설명 |
+|------|------|
+| COMPANY_ID | 기업 고유 ID (COM_YYYYMMDD_NNN) |
+| User_ID | 로그인 아이디 |
+| Password_Hash | 비밀번호 해시 |
+| Company_Name | 회사명 |
+| Business_No | 사업자등록번호 |
+| CEO_Name | 대표자명 |
+| Contact_Name | 담당자명 |
+| Contact_Email | 담당자 이메일 |
+| Contact_Phone | 담당자 전화번호 |
+| Industry | 업종 |
+| Identity_Verified | 본인인증 완료 (Y/N) |
+| Status | 상태 (Pending/Active/Suspended) |
+| Created_At | 가입일 |
+
+**헤더 행:**
+```
+COMPANY_ID | User_ID | Password_Hash | Company_Name | Business_No | CEO_Name | Contact_Name | Contact_Email | Contact_Phone | Industry | Identity_Verified | Status | Created_At
+```
+
+### 📊 TB_DELEGATION (위임 계약)
+
+| 컬럼 | 설명 |
+|------|------|
+| DELEGATION_ID | 위임 계약 ID (DEL_YYYYMMDD_NNN) |
+| Broker_ID | 중개인 ID |
+| Delegator_Type | 위임자 유형 (Investor/Company) |
+| Delegator_ID | 위임자 ID |
+| Contract_Doc_ID | 위임 계약서 문서 ID (유캔사인) |
+| Contract_Status | 계약 상태 (Draft/Signed/Expired) |
+| Admin_Approved | 운영진 승인 (Y/N) |
+| Admin_Approved_At | 승인 일시 |
+| Valid_From | 계약 시작일 |
+| Valid_Until | 계약 종료일 |
+| Created_At | 생성일 |
+
+**헤더 행:**
+```
+DELEGATION_ID | Broker_ID | Delegator_Type | Delegator_ID | Contract_Doc_ID | Contract_Status | Admin_Approved | Admin_Approved_At | Valid_From | Valid_Until | Created_At
+```
+
+### 📊 TB_VIEW_CREDIT (열람권 관리)
+
+| 컬럼 | 설명 |
+|------|------|
+| CREDIT_ID | 열람권 ID |
+| User_Type | 사용자 유형 (Investor/Broker) |
+| User_ID | 사용자 ID |
+| Month | 해당 월 (YYYY-MM) |
+| Free_Credits | 무료 열람권 (기본 5건) |
+| Bonus_Credits | 보너스 열람권 (추천 등) |
+| Used_Credits | 사용한 열람권 |
+| Extra_Credits | 추가 열람권 (운영진 승인) |
+| Updated_At | 최종 업데이트 |
+
+**헤더 행:**
+```
+CREDIT_ID | User_Type | User_ID | Month | Free_Credits | Bonus_Credits | Used_Credits | Extra_Credits | Updated_At
+```
+
+### 📊 TB_REFERRAL (추천인 관리)
+
+| 컬럼 | 설명 |
+|------|------|
+| REFERRAL_ID | 추천 ID |
+| Referrer_Type | 추천인 유형 (Investor/Broker/Company) |
+| Referrer_ID | 추천인 ID |
+| Referred_Type | 피추천인 유형 |
+| Referred_ID | 피추천인 ID |
+| Bonus_Applied | 보너스 적용 여부 (Y/N) |
+| Bonus_Credits | 적용된 보너스 열람권 수 |
+| Created_At | 추천일 |
+
+**헤더 행:**
+```
+REFERRAL_ID | Referrer_Type | Referrer_ID | Referred_Type | Referred_ID | Bonus_Applied | Bonus_Credits | Created_At
+```
 
 ---
 
