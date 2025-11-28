@@ -1,15 +1,3 @@
-// VentureSquare 로고 SVG 컴포넌트
-const VentureSquareLogo = () => (
-  <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* 검은색 라운드 사각형 배경 */}
-    <rect width="40" height="40" rx="8" fill="#1a1a1a"/>
-    {/* V 심볼 - 흰색 */}
-    <path d="M10 12L20 28L24 20" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    {/* V 심볼 - 파란색 악센트 */}
-    <path d="M24 20L30 12" stroke="#3B82F6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-)
-
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
   
@@ -20,7 +8,11 @@ export const Footer = () => {
           {/* Brand */}
           <div class="col-span-1 md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
-              <VentureSquareLogo />
+              <img 
+                src="/static/vs-logo.png" 
+                alt="VentureSquare" 
+                class="w-10 h-10 rounded-lg"
+              />
               <div>
                 <div class="font-bold text-lg text-white tracking-wide">VENTURE SQUARE</div>
                 <div class="text-xs text-blue-400 font-medium">Round Table</div>
