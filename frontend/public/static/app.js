@@ -80,6 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initRoundTable();
   } else if (path === '/my-page') {
     initMyPage();
+  } else if (path === '/register') {
+    initRegisterPage();
   }
 });
 
@@ -375,16 +377,34 @@ async function initDealDetail() {
   if (!dealId) return;
   
   try {
-    // 데모 데이터
-    const deal = {
-      DEAL_ID: dealId,
-      Industry: 'IT/소프트웨어',
-      Deal_Type: '투자유치',
-      Summary: 'AI 기반 HR 솔루션 스타트업. 기업 채용 프로세스를 혁신하는 SaaS 플랫폼.',
-      Revenue_Range: '10억~50억',
-      Target_Valuation: '100억',
-      Stage: 'Active'
+    // API에서 딜 상세 조회 시도
+    let deal = await apiCall('getDealDetail', { dealId });
+    
+    // API 데이터가 없으면 데모 데이터 사용
+    if (!deal) {
+      deal = {
+        DEAL_ID: dealId,
+        Industry: 'IT/소프트웨어',
+        Deal_Type: '투자유치',
+        Summary: 'AI 기반 HR 솔루션 스타트업. 기업 채용 프로세스를 혁신하는 SaaS 플랫폼. AI 면접 분석, 역량 평가, 채용 예측 기능을 제공합니다.',
+        Revenue_Range: '10억~50억',
+        Target_Valuation: '100억',
+        Stage: 'Active'
+      };
+    }
+    
+    // 업종별 아이콘 매핑
+    const industryIcons = {
+      'IT/소프트웨어': 'laptop',
+      '바이오/헬스케어': 'heart-pulse',
+      '핀테크': 'coins',
+      '이커머스': 'shopping-cart',
+      '에듀테크': 'graduation-cap',
+      '물류/로보틱스': 'bot',
+      '모빌리티/에너지': 'zap',
+      '애그테크': 'sprout'
     };
+    const icon = industryIcons[deal.Industry] || 'briefcase';
     
     container.innerHTML = `
       <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden">
@@ -392,7 +412,7 @@ async function initDealDetail() {
         <div class="p-8 border-b border-white/10 bg-gradient-to-br from-blue-600/20 to-purple-600/10">
           <div class="flex items-center gap-4 mb-4">
             <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center">
-              <i data-lucide="laptop" class="w-8 h-8 text-blue-400"></i>
+              <i data-lucide="${icon}" class="w-8 h-8 text-blue-400"></i>
             </div>
             <div>
               <div class="text-sm text-gray-400">${deal.Industry}</div>
@@ -580,9 +600,9 @@ document.addEventListener('click', (e) => {
 // 라운드테이블 페이지
 // ============================================================
 
-function initRoundTable() {
+async function initRoundTable() {
   renderCalendar();
-  loadUpcomingEvents();
+  await loadUpcomingEvents();
 }
 
 function renderCalendar() {
@@ -629,49 +649,70 @@ function renderCalendar() {
   if (monthEl) monthEl.textContent = `${year}년 ${monthNames[month]}`;
 }
 
-function loadUpcomingEvents() {
+async function loadUpcomingEvents() {
   const container = document.getElementById('upcoming-events');
   if (!container) return;
   
-  const events = [
-    {
-      RT_ID: 'RT_202412_001',
-      Type: 'Public',
-      Date_Time: '2024-12-15 14:00',
-      Location: '강남 VS스퀘어 3층',
-      Available_Slots: 6
-    },
-    {
-      RT_ID: 'RT_202412_002',
-      Type: 'Public',
-      Date_Time: '2024-12-20 10:00',
-      Location: '판교 스타트업캠퍼스',
-      Available_Slots: 6
-    }
-  ];
+  // API에서 라운드테이블 일정 조회
+  let events = await apiCall('getRoundTable');
   
-  container.innerHTML = events.map(event => `
+  // API 데이터가 없으면 데모 데이터 사용
+  if (!events || events.length === 0) {
+    events = [
+      {
+        RT_ID: 'RT_202412_001',
+        Type: 'Public',
+        Date_Time: '2024-12-15 14:00',
+        Location: '강남 VS스퀘어 3층',
+        Description: '12월 정기 딜소싱 라운드테이블',
+        Available_Slots: 6
+      },
+      {
+        RT_ID: 'RT_202412_002',
+        Type: 'Public',
+        Date_Time: '2024-12-20 10:00',
+        Location: '판교 스타트업캠퍼스',
+        Description: '바이오/헬스케어 전문 라운드테이블',
+        Available_Slots: 6
+      },
+      {
+        RT_ID: 'RT_202501_001',
+        Type: 'Public',
+        Date_Time: '2025-01-10 14:00',
+        Location: '서울 여의도 IFC',
+        Description: '2025년 신년 딜소싱 라운드테이블',
+        Available_Slots: 10
+      }
+    ];
+  }
+  
+  container.innerHTML = events.map(event => {
+    const dateParts = event.Date_Time ? event.Date_Time.split(' ')[0].split('-') : ['2024', '12', '15'];
+    const time = event.Date_Time ? event.Date_Time.split(' ')[1] : '14:00';
+    
+    return `
     <div class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div class="flex items-center gap-4">
         <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex flex-col items-center justify-center">
-          <span class="text-xs text-purple-400 font-medium">${event.Date_Time.split(' ')[0].split('-')[1]}월</span>
-          <span class="text-xl font-bold text-purple-400">${event.Date_Time.split(' ')[0].split('-')[2]}</span>
+          <span class="text-xs text-purple-400 font-medium">${dateParts[1]}월</span>
+          <span class="text-xl font-bold text-purple-400">${dateParts[2]}</span>
         </div>
         <div>
-          <div class="font-semibold text-white">${event.RT_ID}</div>
-          <div class="text-sm text-gray-500 flex items-center gap-1 mt-1">
+          <div class="font-semibold text-white">${event.Description || event.RT_ID}</div>
+          <div class="text-xs text-gray-600 mb-1">${event.RT_ID}</div>
+          <div class="text-sm text-gray-500 flex items-center gap-1">
             <i data-lucide="map-pin" class="w-4 h-4"></i>
             ${event.Location}
           </div>
           <div class="text-sm text-gray-500 flex items-center gap-1">
             <i data-lucide="clock" class="w-4 h-4"></i>
-            ${event.Date_Time.split(' ')[1]}
+            ${time}
           </div>
         </div>
       </div>
       <div class="flex items-center gap-4">
         <div class="text-sm text-gray-400">
-          잔여 <span class="font-bold text-blue-400">${event.Available_Slots}</span>석
+          잔여 <span class="font-bold text-blue-400">${event.Available_Slots || 0}</span>석
         </div>
         <button onclick="openRTModal('${event.RT_ID}')"
           class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
@@ -680,7 +721,7 @@ function loadUpcomingEvents() {
         </button>
       </div>
     </div>
-  `).join('');
+  `}).join('');
   
   lucide.createIcons();
 }
@@ -708,6 +749,70 @@ function closeRTModal() {
 }
 
 // ============================================================
+// 딜 등록 페이지
+// ============================================================
+
+function initRegisterPage() {
+  const form = document.getElementById('deal-register-form');
+  
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const submitBtn = document.getElementById('register-submit-btn');
+      
+      // 로딩 상태
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div><span>처리 중...</span>';
+      
+      try {
+        // 폼 데이터 수집
+        const data = {
+          companyName: formData.get('companyName'),
+          ceoName: formData.get('ceoName'),
+          industry: formData.get('industry'),
+          foundedYear: formData.get('foundedYear'),
+          dealType: formData.get('dealType'),
+          investmentRound: formData.get('investmentRound'),
+          revenueRange: formData.get('revenueRange'),
+          targetValuation: formData.get('targetValuation'),
+          targetFunding: formData.get('targetFunding'),
+          summary: formData.get('summary'),
+          description: formData.get('description'),
+          contactName: formData.get('contactName'),
+          contactTitle: formData.get('contactTitle'),
+          contactEmail: formData.get('contactEmail'),
+          contactPhone: formData.get('contactPhone')
+        };
+        
+        // API 호출 (실제 운영 시)
+        // await apiCall('registerDeal', data, 'POST');
+        
+        // 데모: 1.5초 대기 후 성공 처리
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // 성공 처리
+        form.classList.add('hidden');
+        document.getElementById('register-success').classList.remove('hidden');
+        showToast('딜 등록 신청이 완료되었습니다.', 'success');
+        
+        // 스크롤 맨 위로
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+      } catch (error) {
+        console.error('딜 등록 실패:', error);
+        showToast('딜 등록 중 오류가 발생했습니다.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i>딜 등록 신청';
+        lucide.createIcons();
+      }
+    });
+  }
+}
+
+// ============================================================
 // 마이페이지
 // ============================================================
 
@@ -730,8 +835,46 @@ async function loadUserStatus() {
   
   localStorage.setItem('userEmail', email);
   
-  // 데모 데이터
-  document.getElementById('my-nda-list').innerHTML = `
+  // 로딩 표시
+  document.getElementById('my-nda-list').innerHTML = '<div class="flex justify-center py-8"><div class="spinner"></div></div>';
+  document.getElementById('my-rt-list').innerHTML = '<div class="flex justify-center py-8"><div class="spinner"></div></div>';
+  
+  // API에서 사용자 현황 조회
+  const userData = await apiCall('getUserStatus', { email });
+  
+  // NDA 현황 렌더링
+  if (userData?.ndaRequests && userData.ndaRequests.length > 0) {
+    document.getElementById('my-nda-list').innerHTML = `
+      <div class="divide-y divide-white/10">
+        ${userData.ndaRequests.map(nda => {
+          const statusColors = {
+            'Signed': 'bg-green-500/20 text-green-400',
+            'Pending': 'bg-yellow-500/20 text-yellow-400',
+            'Expired': 'bg-red-500/20 text-red-400'
+          };
+          const statusIcons = {
+            'Signed': 'check',
+            'Pending': 'clock',
+            'Expired': 'x'
+          };
+          return `
+            <div class="py-4 flex items-center justify-between">
+              <div>
+                <div class="font-medium text-white">${nda.dealId}</div>
+                <div class="text-sm text-gray-500">${nda.requestedAt || ''}</div>
+              </div>
+              <span class="px-3 py-1 rounded-full text-sm ${statusColors[nda.status] || 'bg-gray-500/20 text-gray-400'} flex items-center gap-1">
+                <i data-lucide="${statusIcons[nda.status] || 'info'}" class="w-3 h-3"></i>
+                ${nda.status}
+              </span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else {
+    // 데모 데이터 표시
+    document.getElementById('my-nda-list').innerHTML = `
     <div class="divide-y divide-white/10">
       <div class="py-4 flex items-center justify-between">
         <div>
@@ -755,21 +898,43 @@ async function loadUserStatus() {
       </div>
     </div>
   `;
+  }
   
-  document.getElementById('my-rt-list').innerHTML = `
-    <div class="divide-y divide-white/10">
-      <div class="py-4 flex items-center justify-between">
-        <div>
-          <div class="font-medium text-white">RT_202412_001</div>
-          <div class="text-sm text-gray-500">2024-12-15 14:00 • 강남 VS스퀘어</div>
-        </div>
-        <span class="px-3 py-1 rounded-full text-sm bg-blue-500/20 text-blue-400 flex items-center gap-1">
-          <i data-lucide="calendar-check" class="w-3 h-3"></i>
-          확정
-        </span>
+  // RT 현황 렌더링
+  if (userData?.roundTableApps && userData.roundTableApps.length > 0) {
+    document.getElementById('my-rt-list').innerHTML = `
+      <div class="divide-y divide-white/10">
+        ${userData.roundTableApps.map(rt => `
+          <div class="py-4 flex items-center justify-between">
+            <div>
+              <div class="font-medium text-white">${rt.rtId}</div>
+              <div class="text-sm text-gray-500">${rt.dateTime || ''} • ${rt.location || ''}</div>
+            </div>
+            <span class="px-3 py-1 rounded-full text-sm bg-blue-500/20 text-blue-400 flex items-center gap-1">
+              <i data-lucide="calendar-check" class="w-3 h-3"></i>
+              ${rt.status || '확정'}
+            </span>
+          </div>
+        `).join('')}
       </div>
-    </div>
-  `;
+    `;
+  } else {
+    // 데모 데이터 표시
+    document.getElementById('my-rt-list').innerHTML = `
+      <div class="divide-y divide-white/10">
+        <div class="py-4 flex items-center justify-between">
+          <div>
+            <div class="font-medium text-white">RT_202412_001</div>
+            <div class="text-sm text-gray-500">2024-12-15 14:00 • 강남 VS스퀘어</div>
+          </div>
+          <span class="px-3 py-1 rounded-full text-sm bg-blue-500/20 text-blue-400 flex items-center gap-1">
+            <i data-lucide="calendar-check" class="w-3 h-3"></i>
+            확정
+          </span>
+        </div>
+      </div>
+    `;
+  }
   
   lucide.createIcons();
   showToast('조회가 완료되었습니다.', 'success');
