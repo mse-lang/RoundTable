@@ -1,0 +1,259 @@
+{
+  "description": "VS AI ERP - Google Sheets 샘플 데이터",
+  "version": "1.0.0",
+  "created_at": "2024-11-28",
+  
+  "TB_DEAL_ROOM": {
+    "headers": [
+      "DEAL_ID", "COM_ID", "Industry", "Deal_Type", "Summary", "Full_Description",
+      "Revenue_Range", "Target_Valuation", "Stage", "Folder_ID_Private", 
+      "Folder_ID_Public", "Teaser_Link", "Full_Report_Link", "Contact_Person",
+      "Created_At", "Updated_At"
+    ],
+    "sample_records": [
+      {
+        "DEAL_ID": "DEAL_20241128_001",
+        "COM_ID": "COM_001",
+        "Industry": "IT/소프트웨어",
+        "Deal_Type": "투자유치",
+        "Summary": "AI 기반 HR 솔루션 스타트업. 기업 채용 프로세스를 혁신하는 SaaS 플랫폼.",
+        "Full_Description": "AI 면접 분석, 역량 평가, 채용 예측 등 종합 HR Tech 솔루션을 제공. 현재 50개 이상의 기업 고객 확보. ARR 15억, YoY 200% 성장.",
+        "Revenue_Range": "10억~50억",
+        "Target_Valuation": "100억",
+        "Stage": "Active",
+        "Contact_Person": "김투자"
+      },
+      {
+        "DEAL_ID": "DEAL_20241128_002",
+        "COM_ID": "COM_002",
+        "Industry": "바이오/헬스케어",
+        "Deal_Type": "매각",
+        "Summary": "디지털 헬스케어 플랫폼. 원격 진료 및 건강관리 서비스.",
+        "Full_Description": "비대면 진료 플랫폼과 개인 건강관리 앱을 운영. MAU 10만, 제휴 병원 200개 이상. 흑자 전환 완료.",
+        "Revenue_Range": "50억~100억",
+        "Target_Valuation": "300억",
+        "Stage": "Active",
+        "Contact_Person": "이사업"
+      },
+      {
+        "DEAL_ID": "DEAL_20241128_003",
+        "COM_ID": "COM_003",
+        "Industry": "핀테크",
+        "Deal_Type": "투자유치",
+        "Summary": "블록체인 기반 결제 솔루션. B2B 크로스보더 페이먼트.",
+        "Full_Description": "기업간 국제 송금 수수료를 90% 절감하는 블록체인 결제 인프라. 현재 20개국 서비스 중. 월 거래액 100억+.",
+        "Revenue_Range": "5억~10억",
+        "Target_Valuation": "50억",
+        "Stage": "Active",
+        "Contact_Person": "박대표"
+      },
+      {
+        "DEAL_ID": "DEAL_20241128_004",
+        "COM_ID": "COM_004",
+        "Industry": "이커머스",
+        "Deal_Type": "매각",
+        "Summary": "D2C 패션 브랜드. MZ세대 타겟 스트리트웨어.",
+        "Full_Description": "자체 브랜드 및 편집샵 운영. 인스타그램 팔로워 50만, 재구매율 45%. 연 매출 80억.",
+        "Revenue_Range": "50억~100억",
+        "Target_Valuation": "150억",
+        "Stage": "Active",
+        "Contact_Person": "최패션"
+      },
+      {
+        "DEAL_ID": "DEAL_20241128_005",
+        "COM_ID": "COM_005",
+        "Industry": "에듀테크",
+        "Deal_Type": "투자유치",
+        "Summary": "AI 영어 학습 앱. 개인화 학습 경험 제공.",
+        "Full_Description": "GPT 기반 1:1 영어 회화 및 첨삭 서비스. 누적 다운로드 100만, 유료 구독자 5만명.",
+        "Revenue_Range": "10억~50억",
+        "Target_Valuation": "80억",
+        "Stage": "Active",
+        "Contact_Person": "정에듀"
+      }
+    ],
+    "stage_options": ["Draft", "Review", "Active", "Pending", "Sold", "Closed"],
+    "industry_options": [
+      "IT/소프트웨어", "바이오/헬스케어", "핀테크", "이커머스", "에듀테크",
+      "물류/유통", "부동산/프롭테크", "제조/하드웨어", "콘텐츠/미디어", "기타"
+    ],
+    "deal_type_options": ["투자유치", "매각", "M&A", "구주매각"],
+    "revenue_range_options": [
+      "Pre-Revenue", "1억 미만", "1억~5억", "5억~10억", 
+      "10억~50억", "50억~100억", "100억 이상"
+    ]
+  },
+  
+  "TB_NDA_REQ": {
+    "headers": [
+      "REQ_ID", "DEAL_ID", "User_Email", "User_Name", "User_Phone",
+      "Doc_ID", "Status", "Access_Expiry", "Signed_At", "Created_At", "Updated_At"
+    ],
+    "sample_records": [
+      {
+        "REQ_ID": "REQ_20241128_001",
+        "DEAL_ID": "DEAL_20241128_001",
+        "User_Email": "investor1@vc.com",
+        "User_Name": "홍길동",
+        "User_Phone": "01012345678",
+        "Doc_ID": "UCAN_12345",
+        "Status": "Signed",
+        "Access_Expiry": "2025-02-28",
+        "Signed_At": "2024-11-28 10:30:00"
+      },
+      {
+        "REQ_ID": "REQ_20241128_002",
+        "DEAL_ID": "DEAL_20241128_002",
+        "User_Email": "analyst@fund.co.kr",
+        "User_Name": "김분석",
+        "User_Phone": "01087654321",
+        "Doc_ID": "UCAN_12346",
+        "Status": "Pending",
+        "Access_Expiry": ""
+      }
+    ],
+    "status_options": ["Pending", "Signed", "Expired", "Rejected", "Cancelled"]
+  },
+  
+  "TB_ROUND_TABLE": {
+    "headers": [
+      "RT_ID", "Type", "Date_Time", "Location", "Description",
+      "Host_ID", "Max_Attendees", "Current_Attendees", "Status", "Created_At"
+    ],
+    "sample_records": [
+      {
+        "RT_ID": "RT_202412_001",
+        "Type": "Public",
+        "Date_Time": "2024-12-15 14:00",
+        "Location": "강남 VS스퀘어 3층 회의실",
+        "Description": "12월 정기 딜소싱 라운드테이블. AI/핀테크 분야 스타트업 집중.",
+        "Host_ID": "admin@venturesquare.net",
+        "Max_Attendees": 8,
+        "Current_Attendees": 2,
+        "Status": "Open"
+      },
+      {
+        "RT_ID": "RT_202412_002",
+        "Type": "Public",
+        "Date_Time": "2024-12-20 10:00",
+        "Location": "판교 스타트업캠퍼스 B동 세미나실",
+        "Description": "바이오/헬스케어 전문 라운드테이블. VC 및 CVC 참여.",
+        "Host_ID": "admin@venturesquare.net",
+        "Max_Attendees": 6,
+        "Current_Attendees": 0,
+        "Status": "Open"
+      },
+      {
+        "RT_ID": "RT_202412_003",
+        "Type": "Private",
+        "Date_Time": "2024-12-22 15:00",
+        "Location": "서울 강남 (상세 위치 개별 안내)",
+        "Description": "프라이빗 1:1 미팅. 시리즈B 투자 논의.",
+        "Host_ID": "admin@venturesquare.net",
+        "Max_Attendees": 4,
+        "Current_Attendees": 1,
+        "Status": "Open"
+      },
+      {
+        "RT_ID": "RT_202501_001",
+        "Type": "Public",
+        "Date_Time": "2025-01-10 14:00",
+        "Location": "강남 VS스퀘어 3층",
+        "Description": "2025년 1월 정기 라운드테이블. 신년 딜소싱 킥오프.",
+        "Host_ID": "admin@venturesquare.net",
+        "Max_Attendees": 10,
+        "Current_Attendees": 0,
+        "Status": "Open"
+      }
+    ],
+    "type_options": ["Public", "Private"],
+    "status_options": ["Open", "Closed", "Cancelled", "Completed"]
+  },
+  
+  "TB_RT_APPLICATION": {
+    "headers": [
+      "APP_ID", "RT_ID", "Participant_Email", "Participant_Name",
+      "Purpose", "Fee_Rate", "Agreed_At", "Status"
+    ],
+    "sample_records": [
+      {
+        "APP_ID": "APP_202412_001",
+        "RT_ID": "RT_202412_001",
+        "Participant_Email": "investor1@vc.com",
+        "Participant_Name": "홍길동",
+        "Purpose": "Sourcing",
+        "Fee_Rate": 3.0,
+        "Agreed_At": "2024-11-28 11:00:00",
+        "Status": "Confirmed"
+      },
+      {
+        "APP_ID": "APP_202412_002",
+        "RT_ID": "RT_202412_001",
+        "Participant_Email": "partner@acc.com",
+        "Participant_Name": "김파트너",
+        "Purpose": "IR",
+        "Fee_Rate": 2.5,
+        "Agreed_At": "2024-11-28 14:30:00",
+        "Status": "Confirmed"
+      }
+    ],
+    "purpose_options": ["IR", "Sourcing", "Networking", "General"],
+    "status_options": ["Pending", "Confirmed", "Cancelled", "Attended", "No-Show"]
+  },
+  
+  "System_Config": {
+    "headers": ["KEY", "VALUE", "Description"],
+    "required_configs": [
+      {
+        "KEY": "UCANSIGN_API_KEY",
+        "VALUE": "",
+        "Description": "유캔사인 API 키 (https://ucansign.com에서 발급)"
+      },
+      {
+        "KEY": "UCANSIGN_API_SECRET",
+        "VALUE": "",
+        "Description": "유캔사인 API 시크릿"
+      },
+      {
+        "KEY": "UCANSIGN_TEMPLATE_ID",
+        "VALUE": "",
+        "Description": "NDA 문서 템플릿 ID"
+      },
+      {
+        "KEY": "SOLAPI_API_KEY",
+        "VALUE": "",
+        "Description": "솔라피 API 키 (https://solapi.com에서 발급)"
+      },
+      {
+        "KEY": "SOLAPI_API_SECRET",
+        "VALUE": "",
+        "Description": "솔라피 API 시크릿"
+      },
+      {
+        "KEY": "GOOGLE_CHAT_WEBHOOK",
+        "VALUE": "",
+        "Description": "Google Chat 웹훅 URL (운영 알림용)"
+      },
+      {
+        "KEY": "NDA_EXPIRY_DAYS",
+        "VALUE": "90",
+        "Description": "NDA 접근 권한 만료 일수 (기본 90일)"
+      },
+      {
+        "KEY": "ADMIN_EMAIL",
+        "VALUE": "admin@venturesquare.net",
+        "Description": "관리자 이메일"
+      },
+      {
+        "KEY": "SERVICE_NAME",
+        "VALUE": "VS AI ERP",
+        "Description": "서비스명"
+      },
+      {
+        "KEY": "DEFAULT_FEE_RATE",
+        "VALUE": "3.0",
+        "Description": "기본 수수료 확약률 (%)"
+      }
+    ]
+  }
+}
