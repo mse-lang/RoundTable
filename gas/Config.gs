@@ -55,7 +55,10 @@ const SCRIPT_PROPERTY_KEYS = {
   SOLAPI_SENDER_NAME: 'SOLAPI_SENDER_NAME',     // 발신자명
   SOLAPI_PF_ID: 'SOLAPI_PF_ID',                 // 카카오 채널 ID (알림톡용)
   // 공공데이터 API
-  PUBLIC_DATA_KEY: 'PUBLIC_DATA_KEY'            // 공공데이터포털 API 키
+  PUBLIC_DATA_KEY: 'PUBLIC_DATA_KEY',           // 공공데이터포털 API 키
+  // 관리자 인증 (방법 2: Script Properties 사용)
+  ADMIN_ID: 'ADMIN_ID',                         // 관리자 아이디
+  ADMIN_PASSWORD: 'ADMIN_PASSWORD'              // 관리자 비밀번호
 };
 
 // ============================================================
@@ -255,6 +258,76 @@ function getPublicDataKey() {
  */
 function getGeminiApiKey() {
   return PropertiesService.getScriptProperties().getProperty(SCRIPT_PROPERTY_KEYS.GEMINI_API_KEY) || '';
+}
+
+/**
+ * 관리자 인증 정보 조회 (Script Properties에서 가져옴)
+ * @returns {Object} - { adminId, adminPassword }
+ */
+function getAdminCredentials() {
+  const props = PropertiesService.getScriptProperties();
+  return {
+    adminId: props.getProperty(SCRIPT_PROPERTY_KEYS.ADMIN_ID) || '',
+    adminPassword: props.getProperty(SCRIPT_PROPERTY_KEYS.ADMIN_PASSWORD) || ''
+  };
+}
+
+/**
+ * 관리자 계정 설정 (초기 설정용)
+ * GAS 편집기에서 직접 실행하세요.
+ * @param {string} adminId - 관리자 아이디
+ * @param {string} adminPassword - 관리자 비밀번호
+ */
+function setupAdminAccount(adminId, adminPassword) {
+  if (!adminId || !adminPassword) {
+    Logger.log('❌ 관리자 아이디와 비밀번호를 모두 입력해야 합니다.');
+    return false;
+  }
+  
+  const props = PropertiesService.getScriptProperties();
+  props.setProperty(SCRIPT_PROPERTY_KEYS.ADMIN_ID, adminId);
+  props.setProperty(SCRIPT_PROPERTY_KEYS.ADMIN_PASSWORD, adminPassword);
+  
+  Logger.log('✅ 관리자 계정이 설정되었습니다.');
+  Logger.log(`관리자 ID: ${adminId}`);
+  Logger.log('비밀번호: ********** (보안상 표시하지 않음)');
+  
+  return true;
+}
+
+/**
+ * 관리자 세션 토큰 생성
+ * @returns {string} - 세션 토큰
+ */
+function generateSessionToken() {
+  const randomBytes = Utilities.getUuid();
+  const timestamp = new Date().getTime();
+  return Utilities.base64Encode(`${randomBytes}_${timestamp}`);
+}
+
+/**
+ * 세션 토큰 검증 (유효 시간: 8시간)
+ * @param {string} token - 세션 토큰
+ * @returns {boolean} - 유효 여부
+ */
+function isValidSessionToken(token) {
+  try {
+    if (!token) return false;
+    
+    const decoded = Utilities.newBlob(Utilities.base64Decode(token)).getDataAsString();
+    const parts = decoded.split('_');
+    
+    if (parts.length < 2) return false;
+    
+    const timestamp = parseInt(parts[parts.length - 1]);
+    const now = new Date().getTime();
+    const eightHours = 8 * 60 * 60 * 1000;
+    
+    return (now - timestamp) < eightHours;
+  } catch (e) {
+    Logger.log(`[Session] 토큰 검증 실패: ${e.message}`);
+    return false;
+  }
 }
 
 /**
