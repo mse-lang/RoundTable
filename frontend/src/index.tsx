@@ -2352,4 +2352,710 @@ app.get('/admin', (c) => {
   )
 })
 
+// ============================================================
+// 투자자 대시보드
+// ============================================================
+app.get('/dashboard/investor', (c) => {
+  return c.render(
+    <div class="min-h-screen bg-[#0a0a0a]">
+      {/* Investor Header */}
+      <header class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <i data-lucide="briefcase" class="w-5 h-5 text-white"></i>
+              </div>
+              <div>
+                <div class="font-bold text-white">VS Round Table</div>
+                <div class="text-xs text-blue-400">투자자 대시보드</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-gray-400 text-sm hidden sm:block" id="investor-name">투자자</span>
+              <a href="/" class="text-gray-400 hover:text-white text-sm flex items-center gap-1">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                딜룸
+              </a>
+              <a href="/login" onclick="localStorage.removeItem('session')" class="text-red-400 hover:text-red-300 text-sm flex items-center gap-1">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                로그아웃
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div class="mb-8">
+          <h1 class="text-2xl font-bold text-white mb-2">안녕하세요, <span id="investor-welcome-name">투자자</span>님</h1>
+          <p class="text-gray-400">오늘도 좋은 투자 기회를 찾아보세요.</p>
+        </div>
+
+        {/* Stats Overview */}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="eye" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">잔여 열람권</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="remaining-credits">5</div>
+            <div class="text-xs text-gray-500 mt-1">월 기본 5건 제공</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="file-signature" class="w-5 h-5 text-green-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">NDA 체결</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="nda-count">0</div>
+            <div class="text-xs text-green-400 mt-1">활성 NDA</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="calendar" class="w-5 h-5 text-purple-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">라운드테이블</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="rt-count">0</div>
+            <div class="text-xs text-purple-400 mt-1">참가 예정</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="users" class="w-5 h-5 text-orange-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">추천 보너스</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="referral-bonus">0</div>
+            <div class="text-xs text-orange-400 mt-1">추천 시 +2 열람권</div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-6 mb-8">
+          <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
+            빠른 메뉴
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="/" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="search" class="w-6 h-6 text-blue-400"></i>
+              <span class="text-sm text-gray-300">딜 둘러보기</span>
+            </a>
+            <a href="/round-table" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="calendar" class="w-6 h-6 text-purple-400"></i>
+              <span class="text-sm text-gray-300">라운드테이블</span>
+            </a>
+            <a href="#referral" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="gift" class="w-6 h-6 text-orange-400"></i>
+              <span class="text-sm text-gray-300">친구 추천</span>
+            </a>
+            <a href="#settings" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="settings" class="w-6 h-6 text-gray-400"></i>
+              <span class="text-sm text-gray-300">계정 설정</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* My NDA List */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="file-text" class="w-5 h-5 text-green-400"></i>
+              나의 NDA 현황
+            </h2>
+            <div id="investor-nda-list" class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">AI 기반 HR 솔루션</div>
+                    <div class="text-gray-500 text-xs">Series A · IT/소프트웨어</div>
+                  </div>
+                </div>
+                <a href="/deal/DEAL_001" class="text-blue-400 hover:text-blue-300 text-sm">열람 →</a>
+              </div>
+              
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="clock" class="w-5 h-5 text-yellow-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">블록체인 결제 플랫폼</div>
+                    <div class="text-gray-500 text-xs">Series B · 핀테크</div>
+                  </div>
+                </div>
+                <span class="text-yellow-400 text-sm">서명 대기</span>
+              </div>
+              
+              <div class="text-center py-4 text-gray-500 text-sm">
+                <a href="/" class="text-blue-400 hover:text-blue-300">+ 더 많은 딜 보기</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Upcoming Round Tables */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="calendar-check" class="w-5 h-5 text-purple-400"></i>
+              참가 예정 라운드테이블
+            </h2>
+            <div id="investor-rt-list" class="space-y-3">
+              <div class="p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl">
+                <div class="flex items-start justify-between mb-2">
+                  <div>
+                    <div class="text-white font-medium">AI/SaaS 투자 라운드테이블</div>
+                    <div class="text-purple-300 text-sm">2024년 12월 15일 (금) 14:00</div>
+                  </div>
+                  <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full">확정</span>
+                </div>
+                <div class="text-gray-400 text-xs flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3 h-3"></i>
+                  강남구 역삼동 VS빌딩 3층
+                </div>
+              </div>
+              
+              <div class="text-center py-4 text-gray-500 text-sm">
+                <a href="/round-table" class="text-purple-400 hover:text-purple-300">+ 라운드테이블 일정 보기</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Referral Section */}
+        <div id="referral" class="mt-8 bg-gradient-to-br from-orange-900/30 to-yellow-900/30 rounded-2xl border border-orange-500/30 p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <i data-lucide="gift" class="w-6 h-6 text-orange-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-bold text-white mb-2">투자자 추천하고 열람권 받기</h3>
+              <p class="text-orange-200/80 text-sm mb-4">
+                다른 투자자를 추천하면 추천인과 피추천인 모두에게 <strong class="text-white">열람권 2건</strong>이 추가 제공됩니다.
+              </p>
+              <div class="flex items-center gap-3">
+                <input type="text" value="https://vs-roundtable.pages.dev/signup?ref=INV_001" readonly
+                  class="flex-1 px-4 py-2 rounded-lg bg-white/10 border border-orange-500/30 text-white text-sm" />
+                <button onclick="navigator.clipboard.writeText('https://vs-roundtable.pages.dev/signup?ref=INV_001')" 
+                  class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  복사
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>,
+    { title: '투자자 대시보드 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
+// 기업 대시보드
+// ============================================================
+app.get('/dashboard/company', (c) => {
+  return c.render(
+    <div class="min-h-screen bg-[#0a0a0a]">
+      {/* Company Header */}
+      <header class="bg-gradient-to-r from-green-900/50 to-emerald-900/50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                <i data-lucide="building-2" class="w-5 h-5 text-white"></i>
+              </div>
+              <div>
+                <div class="font-bold text-white">VS Round Table</div>
+                <div class="text-xs text-green-400">기업 대시보드</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-gray-400 text-sm hidden sm:block" id="company-name">기업</span>
+              <a href="/" class="text-gray-400 hover:text-white text-sm flex items-center gap-1">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                딜룸
+              </a>
+              <a href="/login" onclick="localStorage.removeItem('session')" class="text-red-400 hover:text-red-300 text-sm flex items-center gap-1">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                로그아웃
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div class="mb-8">
+          <h1 class="text-2xl font-bold text-white mb-2">안녕하세요, <span id="company-welcome-name">기업</span>님</h1>
+          <p class="text-gray-400">투자자들의 관심을 확인하고 IR 활동을 관리하세요.</p>
+        </div>
+
+        {/* Stats Overview */}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="folder" class="w-5 h-5 text-green-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">등록 딜</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="company-deals">1</div>
+            <div class="text-xs text-green-400 mt-1">Active 상태</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="eye" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">조회수</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="company-views">0</div>
+            <div class="text-xs text-blue-400 mt-1">이번 달</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="file-signature" class="w-5 h-5 text-purple-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">NDA 요청</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="company-nda">0</div>
+            <div class="text-xs text-purple-400 mt-1">투자자 관심</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="calendar" class="w-5 h-5 text-orange-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">라운드테이블</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="company-rt">0</div>
+            <div class="text-xs text-orange-400 mt-1">참가 예정</div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-6 mb-8">
+          <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
+            빠른 메뉴
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="/register" class="flex flex-col items-center gap-2 p-4 bg-green-500/10 hover:bg-green-500/20 rounded-xl border border-green-500/30 transition-colors">
+              <i data-lucide="plus-circle" class="w-6 h-6 text-green-400"></i>
+              <span class="text-sm text-gray-300">딜 등록</span>
+            </a>
+            <a href="#my-deals" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="folder" class="w-6 h-6 text-blue-400"></i>
+              <span class="text-sm text-gray-300">내 딜 관리</span>
+            </a>
+            <a href="/round-table" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="calendar" class="w-6 h-6 text-purple-400"></i>
+              <span class="text-sm text-gray-300">라운드테이블</span>
+            </a>
+            <a href="#settings" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="settings" class="w-6 h-6 text-gray-400"></i>
+              <span class="text-sm text-gray-300">계정 설정</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* My Deals */}
+          <div id="my-deals" class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="folder" class="w-5 h-5 text-green-400"></i>
+                내 등록 딜
+              </h2>
+              <a href="/register" class="text-green-400 hover:text-green-300 text-sm">+ 새 딜 등록</a>
+            </div>
+            <div id="company-deal-list" class="space-y-3">
+              <div class="p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+                <div class="flex items-start justify-between mb-3">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">Active</span>
+                      <span class="text-gray-500 text-xs">DEAL_20241128_001</span>
+                    </div>
+                    <div class="text-white font-medium">AI 기반 HR 솔루션</div>
+                    <div class="text-gray-400 text-sm">Series A · 100억 목표</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-2xl font-bold text-white">85</div>
+                    <div class="text-xs text-gray-500">AI 분석 점수</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-gray-500">
+                  <span class="flex items-center gap-1">
+                    <i data-lucide="eye" class="w-3 h-3"></i>
+                    조회 24
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i data-lucide="file-signature" class="w-3 h-3"></i>
+                    NDA 요청 3
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i data-lucide="calendar" class="w-3 h-3"></i>
+                    등록 2024.11.28
+                  </span>
+                </div>
+              </div>
+              
+              <div class="text-center py-4 text-gray-500 text-sm">
+                딜을 추가 등록하고 더 많은 투자자를 만나보세요.
+              </div>
+            </div>
+          </div>
+
+          {/* Investor Interest */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="users" class="w-5 h-5 text-blue-400"></i>
+              투자자 관심 현황
+            </h2>
+            <div id="company-interest-list" class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="user" class="w-5 h-5 text-blue-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">OO벤처캐피탈</div>
+                    <div class="text-gray-500 text-xs">NDA 요청 · 2024.11.28</div>
+                  </div>
+                </div>
+                <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">서명 완료</span>
+              </div>
+              
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="user" class="w-5 h-5 text-purple-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">XX파트너스</div>
+                    <div class="text-gray-500 text-xs">NDA 요청 · 2024.11.27</div>
+                  </div>
+                </div>
+                <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">서명 대기</span>
+              </div>
+              
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="user" class="w-5 h-5 text-orange-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">ZZ캐피탈</div>
+                    <div class="text-gray-500 text-xs">조회 · 2024.11.26</div>
+                  </div>
+                </div>
+                <span class="px-2 py-1 bg-gray-500/20 text-gray-400 text-xs rounded-full">티저 조회</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Analysis Report */}
+        <div class="mt-8 bg-gradient-to-br from-blue-900/30 to-purple-900/30 rounded-2xl border border-blue-500/30 p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <i data-lucide="sparkles" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-bold text-white mb-2">AI 투자심사보고서</h3>
+              <p class="text-blue-200/80 text-sm mb-4">
+                Gemini AI가 분석한 귀사의 투자심사보고서를 확인하세요. 라운드테이블 밸류에이션 인덱스와 상세 분석 결과를 제공합니다.
+              </p>
+              <div class="flex items-center gap-3">
+                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <i data-lucide="file-text" class="w-4 h-4"></i>
+                  보고서 보기
+                </button>
+                <button class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                  재분석 요청
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>,
+    { title: '기업 대시보드 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
+// ============================================================
+// 중개인 대시보드
+// ============================================================
+app.get('/dashboard/broker', (c) => {
+  return c.render(
+    <div class="min-h-screen bg-[#0a0a0a]">
+      {/* Broker Header */}
+      <header class="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                <i data-lucide="handshake" class="w-5 h-5 text-white"></i>
+              </div>
+              <div>
+                <div class="font-bold text-white">VS Round Table</div>
+                <div class="text-xs text-purple-400">중개인 대시보드</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-gray-400 text-sm hidden sm:block" id="broker-name">중개인</span>
+              <a href="/" class="text-gray-400 hover:text-white text-sm flex items-center gap-1">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                딜룸
+              </a>
+              <a href="/login" onclick="localStorage.removeItem('session')" class="text-red-400 hover:text-red-300 text-sm flex items-center gap-1">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                로그아웃
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div class="mb-8">
+          <h1 class="text-2xl font-bold text-white mb-2">안녕하세요, <span id="broker-welcome-name">중개인</span>님</h1>
+          <p class="text-gray-400">위임 계약과 중개 활동을 관리하세요.</p>
+        </div>
+
+        {/* Stats Overview */}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="file-text" class="w-5 h-5 text-purple-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">위임 계약</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="broker-contracts">0</div>
+            <div class="text-xs text-purple-400 mt-1">활성 계약</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="building-2" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">기업 고객</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="broker-companies">0</div>
+            <div class="text-xs text-blue-400 mt-1">위임 기업</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="briefcase" class="w-5 h-5 text-green-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">투자자 고객</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="broker-investors">0</div>
+            <div class="text-xs text-green-400 mt-1">위임 투자자</div>
+          </div>
+          
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="check-circle" class="w-5 h-5 text-orange-400"></i>
+              </div>
+              <span class="text-gray-400 text-sm">성사 건수</span>
+            </div>
+            <div class="text-3xl font-bold text-white" id="broker-success">0</div>
+            <div class="text-xs text-orange-400 mt-1">투자 성사</div>
+          </div>
+        </div>
+
+        {/* NDA Notice */}
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4 mb-8">
+          <div class="flex items-start gap-3">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5"></i>
+            <div class="text-sm text-yellow-200/80">
+              <p class="font-semibold text-yellow-400 mb-1">NDA 관리 안내</p>
+              <p>중개인은 각 기업/투자자별로 <strong class="text-white">별도의 NDA</strong>를 체결해야 합니다. 한 위임 계약으로 다른 기업/투자자의 정보에 접근할 수 없습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-6 mb-8">
+          <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
+            빠른 메뉴
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="/" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="search" class="w-6 h-6 text-blue-400"></i>
+              <span class="text-sm text-gray-300">딜 둘러보기</span>
+            </a>
+            <a href="#contracts" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="file-text" class="w-6 h-6 text-purple-400"></i>
+              <span class="text-sm text-gray-300">계약 관리</span>
+            </a>
+            <a href="/round-table" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="calendar" class="w-6 h-6 text-green-400"></i>
+              <span class="text-sm text-gray-300">라운드테이블</span>
+            </a>
+            <a href="#settings" class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-colors">
+              <i data-lucide="settings" class="w-6 h-6 text-gray-400"></i>
+              <span class="text-sm text-gray-300">계정 설정</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Delegation Contracts */}
+          <div id="contracts" class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="file-text" class="w-5 h-5 text-purple-400"></i>
+              위임 계약 현황
+            </h2>
+            <div id="broker-contract-list" class="space-y-3">
+              <div class="p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl">
+                <div class="flex items-start justify-between mb-2">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <i data-lucide="building-2" class="w-4 h-4 text-blue-400"></i>
+                      <span class="text-white font-medium">ABC스타트업</span>
+                    </div>
+                    <div class="text-gray-400 text-sm">기업 위임 계약</div>
+                  </div>
+                  <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">활성</span>
+                </div>
+                <div class="text-xs text-gray-500">계약일: 2024.11.01 · 만료일: 2025.10.31</div>
+              </div>
+              
+              <div class="p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+                <div class="flex items-start justify-between mb-2">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <i data-lucide="briefcase" class="w-4 h-4 text-green-400"></i>
+                      <span class="text-white font-medium">OO벤처캐피탈</span>
+                    </div>
+                    <div class="text-gray-400 text-sm">투자자 위임 계약</div>
+                  </div>
+                  <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">활성</span>
+                </div>
+                <div class="text-xs text-gray-500">계약일: 2024.10.15 · 만료일: 2025.10.14</div>
+              </div>
+              
+              <div class="text-center py-4 text-gray-500 text-sm">
+                새 위임 계약이 필요하시면 운영진에게 문의하세요.
+              </div>
+            </div>
+          </div>
+
+          {/* NDA Status */}
+          <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="shield" class="w-5 h-5 text-green-400"></i>
+              NDA 체결 현황
+            </h2>
+            <div id="broker-nda-list" class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">ABC스타트업 ↔ OO벤처캐피탈</div>
+                    <div class="text-gray-500 text-xs">3자 NDA · 2024.11.15</div>
+                  </div>
+                </div>
+                <span class="text-green-400 text-xs">완료</span>
+              </div>
+              
+              <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="clock" class="w-5 h-5 text-yellow-400"></i>
+                  </div>
+                  <div>
+                    <div class="text-white text-sm font-medium">ABC스타트업 ↔ XX파트너스</div>
+                    <div class="text-gray-500 text-xs">3자 NDA · 요청중</div>
+                  </div>
+                </div>
+                <span class="text-yellow-400 text-xs">대기</span>
+              </div>
+              
+              <div class="text-center py-4 text-gray-500 text-sm">
+                각 매칭 건별로 NDA를 체결해야 합니다.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Activity Log */}
+        <div class="mt-8 bg-white/5 rounded-2xl border border-white/10 p-6">
+          <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="activity" class="w-5 h-5 text-blue-400"></i>
+            중개 활동 기록
+          </h2>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+              <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i data-lucide="link" class="w-4 h-4 text-green-400"></i>
+              </div>
+              <div class="flex-1">
+                <div class="text-white text-sm">ABC스타트업 딜 소개</div>
+                <div class="text-gray-500 text-xs">OO벤처캐피탈에게 딜 정보 전달</div>
+                <div class="text-gray-600 text-xs mt-1">2024.11.15 14:30</div>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+              <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i data-lucide="file-signature" class="w-4 h-4 text-purple-400"></i>
+              </div>
+              <div class="flex-1">
+                <div class="text-white text-sm">NDA 체결 완료</div>
+                <div class="text-gray-500 text-xs">ABC스타트업 ↔ OO벤처캐피탈 3자 NDA</div>
+                <div class="text-gray-600 text-xs mt-1">2024.11.15 16:00</div>
+              </div>
+            </div>
+            
+            <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+              <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i data-lucide="calendar" class="w-4 h-4 text-blue-400"></i>
+              </div>
+              <div class="flex-1">
+                <div class="text-white text-sm">미팅 주선</div>
+                <div class="text-gray-500 text-xs">ABC스타트업 - OO벤처캐피탈 1차 미팅</div>
+                <div class="text-gray-600 text-xs mt-1">2024.11.20 예정</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>,
+    { title: '중개인 대시보드 | 벤쳐스퀘어 라운드테이블' }
+  )
+})
+
 export default app

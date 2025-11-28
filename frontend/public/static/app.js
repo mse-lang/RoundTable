@@ -82,6 +82,20 @@ document.addEventListener('DOMContentLoaded', () => {
     initMyPage();
   } else if (path === '/register') {
     initRegisterPage();
+  } else if (path === '/login') {
+    initLoginPage();
+  } else if (path === '/signup') {
+    initSignupPage();
+  } else if (path === '/admin/login') {
+    initAdminLoginPage();
+  } else if (path === '/admin') {
+    initAdminDashboard();
+  } else if (path === '/dashboard/investor') {
+    initInvestorDashboard();
+  } else if (path === '/dashboard/company') {
+    initCompanyDashboard();
+  } else if (path === '/dashboard/broker') {
+    initBrokerDashboard();
   }
 });
 
@@ -939,6 +953,537 @@ async function loadUserStatus() {
   lucide.createIcons();
   showToast('조회가 완료되었습니다.', 'success');
 }
+
+// ============================================================
+// 통합 로그인 페이지
+// ============================================================
+
+function initLoginPage() {
+  const form = document.getElementById('unified-login-form');
+  
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const role = formData.get('role');
+      const userId = formData.get('userId');
+      const password = formData.get('password');
+      const remember = formData.get('remember');
+      
+      if (!role) {
+        showToast('회원 유형을 선택해주세요.', 'error');
+        return;
+      }
+      
+      const submitBtn = document.getElementById('login-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div><span>로그인 중...</span>';
+      
+      try {
+        // API 호출
+        const result = await apiCall('login', { role, userId, password }, 'POST');
+        
+        if (result === null) {
+          // 데모 모드 - 로그인 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // 데모용 세션 저장
+          const demoSession = {
+            role: role,
+            userId: userId,
+            name: role === 'admin' ? '운영진' : role === 'investor' ? '투자자' : role === 'company' ? '기업' : '중개인',
+            loginTime: new Date().toISOString(),
+            token: 'demo_token_' + Date.now()
+          };
+          
+          localStorage.setItem('session', JSON.stringify(demoSession));
+          if (remember) {
+            localStorage.setItem('rememberLogin', 'true');
+          }
+          
+          showToast('로그인 성공!', 'success');
+          
+          // 역할별 대시보드로 리다이렉트
+          redirectToDashboard(role);
+          return;
+        }
+        
+        // 실제 API 응답 처리
+        if (result.success) {
+          const session = {
+            role: role,
+            userId: result.userId || userId,
+            name: result.name || userId,
+            loginTime: new Date().toISOString(),
+            token: result.sessionToken
+          };
+          
+          localStorage.setItem('session', JSON.stringify(session));
+          if (remember) {
+            localStorage.setItem('rememberLogin', 'true');
+          }
+          
+          showToast('로그인 성공!', 'success');
+          redirectToDashboard(role);
+        }
+        
+      } catch (error) {
+        console.error('로그인 실패:', error);
+        showToast('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="log-in" class="w-5 h-5"></i>로그인';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    });
+  }
+}
+
+// 역할별 대시보드로 리다이렉트
+function redirectToDashboard(role) {
+  const dashboardUrls = {
+    'investor': '/dashboard/investor',
+    'company': '/dashboard/company',
+    'broker': '/dashboard/broker',
+    'admin': '/admin'
+  };
+  
+  const url = dashboardUrls[role] || '/';
+  window.location.href = url;
+}
+
+// ============================================================
+// 통합 회원가입 페이지
+// ============================================================
+
+function initSignupPage() {
+  const form = document.getElementById('unified-signup-form');
+  const roleRadios = document.querySelectorAll('input[name="role"]');
+  
+  // 역할 선택 시 동적 필드 표시
+  roleRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const role = e.target.value;
+      updateSignupFields(role);
+    });
+  });
+  
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const role = formData.get('role');
+      
+      if (!role) {
+        showToast('회원 유형을 선택해주세요.', 'error');
+        return;
+      }
+      
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div><span>처리 중...</span>';
+      
+      try {
+        const data = {
+          role: role,
+          name: formData.get('name'),
+          email: formData.get('email'),
+          phone: formData.get('phone'),
+          company: formData.get('company'),
+          position: formData.get('position')
+        };
+        
+        // 역할별 추가 필드
+        if (role === 'investor') {
+          data.investorType = formData.get('investorType');
+          data.interests = formData.get('interests');
+        } else if (role === 'company') {
+          data.industry = formData.get('industry');
+          data.foundedYear = formData.get('foundedYear');
+        } else if (role === 'broker') {
+          data.referrer = formData.get('referrer');
+        }
+        
+        // API 호출
+        const result = await apiCall('signup', data, 'POST');
+        
+        if (result === null) {
+          // 데모 모드
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        }
+        
+        showToast('회원가입 신청이 완료되었습니다. 운영진 승인 후 계정이 발급됩니다.', 'success');
+        
+        // 로그인 페이지로 이동
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+        
+      } catch (error) {
+        console.error('회원가입 실패:', error);
+        showToast('회원가입 처리 중 오류가 발생했습니다.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i>회원가입 신청';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    });
+  }
+}
+
+function updateSignupFields(role) {
+  const investorFields = document.getElementById('investor-fields');
+  const companyFields = document.getElementById('company-fields');
+  const brokerFields = document.getElementById('broker-fields');
+  const roleNotice = document.getElementById('role-notice');
+  
+  // 모든 필드 숨기기
+  if (investorFields) investorFields.classList.add('hidden');
+  if (companyFields) companyFields.classList.add('hidden');
+  if (brokerFields) brokerFields.classList.add('hidden');
+  
+  // 역할별 필드 표시 및 안내 문구 업데이트
+  const notices = {
+    'investor': {
+      title: '투자자 가입 안내',
+      content: '투자자 회원은 운영진 승인 후 계정이 발급됩니다. 월 5건의 무료 열람권이 제공됩니다.'
+    },
+    'company': {
+      title: '기업 가입 안내',
+      content: '기업 회원은 딜 등록 및 IR 활동이 가능합니다. AI 투자심사보고서를 받으실 수 있습니다.'
+    },
+    'broker': {
+      title: '중개인 가입 안내',
+      content: '중개인은 운영진, 투자자, 또는 기업 회원의 추천 및 위임 계약이 필요합니다. 가입 신청 후 별도의 승인 절차가 진행됩니다.'
+    }
+  };
+  
+  if (role === 'investor' && investorFields) {
+    investorFields.classList.remove('hidden');
+  } else if (role === 'company' && companyFields) {
+    companyFields.classList.remove('hidden');
+  } else if (role === 'broker' && brokerFields) {
+    brokerFields.classList.remove('hidden');
+  }
+  
+  if (roleNotice && notices[role]) {
+    roleNotice.innerHTML = `
+      <div class="flex items-start gap-3">
+        <i data-lucide="info" class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5"></i>
+        <div class="text-sm text-blue-200/80">
+          <p class="font-semibold text-blue-400 mb-1">${notices[role].title}</p>
+          <p>${notices[role].content}</p>
+        </div>
+      </div>
+    `;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+// ============================================================
+// 운영진 로그인 페이지
+// ============================================================
+
+function initAdminLoginPage() {
+  const form = document.getElementById('admin-login-form');
+  
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const adminId = formData.get('adminId');
+      const password = formData.get('password');
+      
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div><span>로그인 중...</span>';
+      
+      try {
+        // API 호출
+        const result = await apiCall('adminLogin', { adminId, password }, 'POST');
+        
+        if (result === null) {
+          // 데모 모드
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // 데모용 세션 저장
+          const demoSession = {
+            role: 'admin',
+            userId: adminId,
+            name: '운영진',
+            loginTime: new Date().toISOString(),
+            token: 'admin_demo_token_' + Date.now()
+          };
+          
+          localStorage.setItem('session', JSON.stringify(demoSession));
+          showToast('운영진 로그인 성공!', 'success');
+          window.location.href = '/admin';
+          return;
+        }
+        
+        // 실제 API 응답 처리
+        if (result.success || result.sessionToken) {
+          const session = {
+            role: 'admin',
+            userId: result.adminId || adminId,
+            name: '운영진',
+            loginTime: result.loginTime || new Date().toISOString(),
+            token: result.sessionToken
+          };
+          
+          localStorage.setItem('session', JSON.stringify(session));
+          showToast('운영진 로그인 성공!', 'success');
+          window.location.href = '/admin';
+        } else {
+          showToast(result.message || '로그인에 실패했습니다.', 'error');
+        }
+        
+      } catch (error) {
+        console.error('운영진 로그인 실패:', error);
+        showToast('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="log-in" class="w-5 h-5"></i>로그인';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    });
+  }
+}
+
+// ============================================================
+// 운영진 대시보드
+// ============================================================
+
+function initAdminDashboard() {
+  // 세션 확인
+  const session = checkSession('admin');
+  if (!session) return;
+  
+  // 대시보드 데이터 로드
+  loadAdminStats();
+}
+
+async function loadAdminStats() {
+  try {
+    const stats = await apiCall('getAdminStats', {});
+    
+    if (stats) {
+      if (document.getElementById('stat-investors')) {
+        document.getElementById('stat-investors').textContent = stats.totalInvestors || '0';
+      }
+      if (document.getElementById('stat-investors-pending')) {
+        document.getElementById('stat-investors-pending').textContent = stats.pendingInvestors || '0';
+      }
+      if (document.getElementById('stat-brokers')) {
+        document.getElementById('stat-brokers').textContent = stats.totalBrokers || '0';
+      }
+      if (document.getElementById('stat-brokers-pending')) {
+        document.getElementById('stat-brokers-pending').textContent = stats.pendingBrokers || '0';
+      }
+      if (document.getElementById('stat-deals')) {
+        document.getElementById('stat-deals').textContent = stats.totalDeals || '0';
+      }
+      if (document.getElementById('stat-deals-active')) {
+        document.getElementById('stat-deals-active').textContent = stats.activeDeals || '0';
+      }
+      if (document.getElementById('stat-nda')) {
+        document.getElementById('stat-nda').textContent = stats.totalNDA || '0';
+      }
+      if (document.getElementById('stat-nda-month')) {
+        document.getElementById('stat-nda-month').textContent = stats.monthlyNDA || '0';
+      }
+    }
+  } catch (error) {
+    console.error('관리자 통계 로드 실패:', error);
+  }
+}
+
+// ============================================================
+// 투자자 대시보드
+// ============================================================
+
+function initInvestorDashboard() {
+  // 세션 확인
+  const session = checkSession('investor');
+  if (!session) return;
+  
+  // 사용자 이름 표시
+  const nameEl = document.getElementById('investor-name');
+  const welcomeNameEl = document.getElementById('investor-welcome-name');
+  if (nameEl) nameEl.textContent = session.name || '투자자';
+  if (welcomeNameEl) welcomeNameEl.textContent = session.name || '투자자';
+  
+  // 대시보드 데이터 로드
+  loadInvestorData();
+}
+
+async function loadInvestorData() {
+  try {
+    const session = JSON.parse(localStorage.getItem('session') || '{}');
+    const data = await apiCall('getInvestorDashboard', { userId: session.userId });
+    
+    if (data) {
+      if (document.getElementById('remaining-credits')) {
+        document.getElementById('remaining-credits').textContent = data.remainingCredits || '5';
+      }
+      if (document.getElementById('nda-count')) {
+        document.getElementById('nda-count').textContent = data.ndaCount || '0';
+      }
+      if (document.getElementById('rt-count')) {
+        document.getElementById('rt-count').textContent = data.rtCount || '0';
+      }
+      if (document.getElementById('referral-bonus')) {
+        document.getElementById('referral-bonus').textContent = data.referralBonus || '0';
+      }
+    }
+  } catch (error) {
+    console.error('투자자 데이터 로드 실패:', error);
+  }
+}
+
+// ============================================================
+// 기업 대시보드
+// ============================================================
+
+function initCompanyDashboard() {
+  // 세션 확인
+  const session = checkSession('company');
+  if (!session) return;
+  
+  // 사용자 이름 표시
+  const nameEl = document.getElementById('company-name');
+  const welcomeNameEl = document.getElementById('company-welcome-name');
+  if (nameEl) nameEl.textContent = session.name || '기업';
+  if (welcomeNameEl) welcomeNameEl.textContent = session.name || '기업';
+  
+  // 대시보드 데이터 로드
+  loadCompanyData();
+}
+
+async function loadCompanyData() {
+  try {
+    const session = JSON.parse(localStorage.getItem('session') || '{}');
+    const data = await apiCall('getCompanyDashboard', { userId: session.userId });
+    
+    if (data) {
+      if (document.getElementById('company-deals')) {
+        document.getElementById('company-deals').textContent = data.dealCount || '0';
+      }
+      if (document.getElementById('company-views')) {
+        document.getElementById('company-views').textContent = data.viewCount || '0';
+      }
+      if (document.getElementById('company-nda')) {
+        document.getElementById('company-nda').textContent = data.ndaCount || '0';
+      }
+      if (document.getElementById('company-rt')) {
+        document.getElementById('company-rt').textContent = data.rtCount || '0';
+      }
+    }
+  } catch (error) {
+    console.error('기업 데이터 로드 실패:', error);
+  }
+}
+
+// ============================================================
+// 중개인 대시보드
+// ============================================================
+
+function initBrokerDashboard() {
+  // 세션 확인
+  const session = checkSession('broker');
+  if (!session) return;
+  
+  // 사용자 이름 표시
+  const nameEl = document.getElementById('broker-name');
+  const welcomeNameEl = document.getElementById('broker-welcome-name');
+  if (nameEl) nameEl.textContent = session.name || '중개인';
+  if (welcomeNameEl) welcomeNameEl.textContent = session.name || '중개인';
+  
+  // 대시보드 데이터 로드
+  loadBrokerData();
+}
+
+async function loadBrokerData() {
+  try {
+    const session = JSON.parse(localStorage.getItem('session') || '{}');
+    const data = await apiCall('getBrokerDashboard', { userId: session.userId });
+    
+    if (data) {
+      if (document.getElementById('broker-contracts')) {
+        document.getElementById('broker-contracts').textContent = data.contractCount || '0';
+      }
+      if (document.getElementById('broker-companies')) {
+        document.getElementById('broker-companies').textContent = data.companyCount || '0';
+      }
+      if (document.getElementById('broker-investors')) {
+        document.getElementById('broker-investors').textContent = data.investorCount || '0';
+      }
+      if (document.getElementById('broker-success')) {
+        document.getElementById('broker-success').textContent = data.successCount || '0';
+      }
+    }
+  } catch (error) {
+    console.error('중개인 데이터 로드 실패:', error);
+  }
+}
+
+// ============================================================
+// 세션 관리
+// ============================================================
+
+function checkSession(requiredRole = null) {
+  const sessionStr = localStorage.getItem('session');
+  
+  if (!sessionStr) {
+    showToast('로그인이 필요합니다.', 'error');
+    window.location.href = '/login';
+    return null;
+  }
+  
+  try {
+    const session = JSON.parse(sessionStr);
+    
+    // 세션 만료 확인 (8시간)
+    const loginTime = new Date(session.loginTime);
+    const now = new Date();
+    const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+    
+    if (hoursDiff > 8) {
+      localStorage.removeItem('session');
+      showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'error');
+      window.location.href = '/login';
+      return null;
+    }
+    
+    // 역할 확인 (데모 모드에서는 유연하게 처리)
+    if (requiredRole && session.role !== requiredRole) {
+      // 데모 모드에서는 역할 불일치 허용
+      console.log(`Role mismatch: expected ${requiredRole}, got ${session.role}. Allowing for demo.`);
+    }
+    
+    return session;
+    
+  } catch (error) {
+    console.error('세션 파싱 오류:', error);
+    localStorage.removeItem('session');
+    window.location.href = '/login';
+    return null;
+  }
+}
+
+function logout() {
+  localStorage.removeItem('session');
+  localStorage.removeItem('rememberLogin');
+  showToast('로그아웃되었습니다.', 'success');
+  window.location.href = '/login';
+}
+
+// 전역에서 사용할 수 있도록 window 객체에 등록
+window.logout = logout;
+window.redirectToDashboard = redirectToDashboard;
 
 // ============================================================
 // 유틸리티
