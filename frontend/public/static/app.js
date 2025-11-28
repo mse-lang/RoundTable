@@ -122,7 +122,7 @@ async function loadFilterOptions() {
     const apiData = await apiCall('getFilterOptions');
     
     // API 데이터가 있으면 사용, 없으면 기본값
-    const industries = apiData?.industries || ['IT/소프트웨어', '바이오/헬스케어', '핀테크', '이커머스', '에듀테크'];
+    const industries = apiData?.industries || ['IT/소프트웨어', '바이오/헬스케어', '핀테크', '이커머스', '에듀테크', '물류/로보틱스', '모빌리티/에너지', '애그테크'];
     const revenues = apiData?.revenueRanges || ['Pre-Revenue', '1억 미만', '1억~5억', '5억~10억', '10억~50억', '50억~100억', '100억 이상'];
     
     const industrySelect = document.getElementById('filter-industry');
@@ -291,12 +291,18 @@ function dealCardHTML(deal) {
     '바이오/헬스케어': 'heart-pulse',
     '핀테크': 'coins',
     '이커머스': 'shopping-cart',
-    '에듀테크': 'graduation-cap'
+    '에듀테크': 'graduation-cap',
+    '물류/로보틱스': 'bot',
+    '모빌리티/에너지': 'zap',
+    '애그테크': 'sprout'
   };
   
   const industryColors = {
     'IT/소프트웨어': 'blue',
     '바이오/헬스케어': 'green',
+    '물류/로보틱스': 'cyan',
+    '모빌리티/에너지': 'amber',
+    '애그테크': 'lime',
     '핀테크': 'yellow',
     '이커머스': 'purple',
     '에듀테크': 'orange'
